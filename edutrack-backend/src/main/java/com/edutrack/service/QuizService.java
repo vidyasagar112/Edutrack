@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.edutrack.dto.request.QuestionRequest;
 import com.edutrack.dto.request.QuizAttemptRequest;
@@ -27,6 +28,7 @@ import com.edutrack.repository.QuizRepository;
 import com.edutrack.repository.UserRepository;
 
 @Service
+@Transactional
 public class QuizService {
 
     @Autowired private QuizRepository        quizRepository;
@@ -34,15 +36,18 @@ public class QuizService {
     @Autowired private QuizAttemptRepository quizAttemptRepository;
     @Autowired private CourseRepository      courseRepository;
     @Autowired private UserRepository        userRepository;
+    @Autowired private EmailService          emailService;
 
-    // CREATE quiz — instructor only
-    public QuizResponse createQuiz(QuizRequest request, String instructorEmail) {
+    public QuizResponse createQuiz(QuizRequest request,
+                                    String instructorEmail) {
         Course course = courseRepository.findById(request.getCourseId())
                 .orElseThrow(() ->
-                    new ResourceNotFoundException("Course", "id", request.getCourseId()));
+                    new ResourceNotFoundException("Course", "id",
+                            request.getCourseId()));
 
         if (!course.getInstructor().getEmail().equals(instructorEmail)) {
-            throw new UnauthorizedException("You are not allowed to add quiz to this course");
+            throw new UnauthorizedException(
+                    "You are not allowed to add quiz to this course");
         }
 
         Quiz quiz = new Quiz();
@@ -55,7 +60,6 @@ public class QuizService {
         return mapToQuizResponse(quizRepository.save(quiz));
     }
 
-    // GET all quizzes by course
     public List<QuizResponse> getQuizzesByCourse(Long courseId) {
         courseRepository.findById(courseId)
                 .orElseThrow(() ->
@@ -66,27 +70,26 @@ public class QuizService {
                 .collect(Collectors.toList());
     }
 
-    // GET quiz by id
     public QuizResponse getQuizById(Long id) {
         return mapToQuizResponse(quizRepository.findById(id)
                 .orElseThrow(() ->
                     new ResourceNotFoundException("Quiz", "id", id)));
     }
 
-    // DELETE quiz — instructor only
     public void deleteQuiz(Long id, String instructorEmail) {
         Quiz quiz = quizRepository.findById(id)
                 .orElseThrow(() ->
                     new ResourceNotFoundException("Quiz", "id", id));
 
-        if (!quiz.getCourse().getInstructor().getEmail().equals(instructorEmail)) {
-            throw new UnauthorizedException("You are not allowed to delete this quiz");
+        if (!quiz.getCourse().getInstructor().getEmail()
+                .equals(instructorEmail)) {
+            throw new UnauthorizedException(
+                    "You are not allowed to delete this quiz");
         }
 
         quizRepository.deleteById(id);
     }
 
-    // ADD question to quiz — instructor only
     public QuestionResponse addQuestion(Long quizId,
                                          QuestionRequest request,
                                          String instructorEmail) {
@@ -94,8 +97,10 @@ public class QuizService {
                 .orElseThrow(() ->
                     new ResourceNotFoundException("Quiz", "id", quizId));
 
-        if (!quiz.getCourse().getInstructor().getEmail().equals(instructorEmail)) {
-            throw new UnauthorizedException("You are not allowed to add questions to this quiz");
+        if (!quiz.getCourse().getInstructor().getEmail()
+                .equals(instructorEmail)) {
+            throw new UnauthorizedException(
+                    "You are not allowed to add questions to this quiz");
         }
 
         Question question = new Question();
@@ -111,7 +116,6 @@ public class QuizService {
         return mapToQuestionResponse(questionRepository.save(question));
     }
 
-    // GET all questions of a quiz
     public List<QuestionResponse> getQuestionsByQuiz(Long quizId) {
         quizRepository.findById(quizId)
                 .orElseThrow(() ->
@@ -122,74 +126,91 @@ public class QuizService {
                 .collect(Collectors.toList());
     }
 
-    // DELETE question — instructor only
     public void deleteQuestion(Long questionId, String instructorEmail) {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() ->
-                    new ResourceNotFoundException("Question", "id", questionId));
+                    new ResourceNotFoundException("Question", "id",
+                            questionId));
 
         if (!question.getQuiz().getCourse().getInstructor()
                 .getEmail().equals(instructorEmail)) {
-            throw new UnauthorizedException("You are not allowed to delete this question");
+            throw new UnauthorizedException(
+                    "You are not allowed to delete this question");
         }
 
         questionRepository.deleteById(questionId);
     }
 
-    // SUBMIT quiz attempt — student only
     public QuizAttemptResponse submitAttempt(QuizAttemptRequest request,
                                               String studentEmail) {
         User student = userRepository.findByEmail(studentEmail)
                 .orElseThrow(() ->
-                    new ResourceNotFoundException("User", "email", studentEmail));
+                    new ResourceNotFoundException("User", "email",
+                            studentEmail));
 
         Quiz quiz = quizRepository.findById(request.getQuizId())
                 .orElseThrow(() ->
-                    new ResourceNotFoundException("Quiz", "id", request.getQuizId()));
+                    new ResourceNotFoundException("Quiz", "id",
+                            request.getQuizId()));
 
-        // get all questions of this quiz
-        List<Question> questions = questionRepository.findByQuizId(quiz.getId());
+        List<Question> questions = questionRepository
+                .findByQuizId(quiz.getId());
 
-        // calculate score
         Map<Long, String> answers = request.getAnswers();
         int score = 0;
         for (Question q : questions) {
             String submitted = answers.get(q.getId());
-            if (submitted != null && submitted.equals(q.getCorrectOption())) {
+            if (submitted != null
+                    && submitted.equals(q.getCorrectOption())) {
                 score++;
             }
         }
 
-        // save attempt
         QuizAttempt attempt = new QuizAttempt();
         attempt.setStudent(student);
         attempt.setQuiz(quiz);
         attempt.setScore(score);
         attempt.setTotalQuestions(questions.size());
 
-        return mapToAttemptResponse(quizAttemptRepository.save(attempt));
+        QuizAttempt saved = quizAttemptRepository.save(attempt);
+
+        double percentage = saved.getTotalQuestions() > 0
+                ? (saved.getScore() * 100.0 / saved.getTotalQuestions())
+                : 0;
+
+        emailService.sendQuizResultEmail(
+                student.getEmail(),
+                student.getFullName(),
+                quiz.getTitle(),
+                saved.getScore(),
+                saved.getTotalQuestions(),
+                percentage
+        );
+
+        return mapToAttemptResponse(saved);
     }
 
-    // GET all attempts by student
     public List<QuizAttemptResponse> getMyAttempts(String studentEmail) {
         User student = userRepository.findByEmail(studentEmail)
                 .orElseThrow(() ->
-                    new ResourceNotFoundException("User", "email", studentEmail));
+                    new ResourceNotFoundException("User", "email",
+                            studentEmail));
         return quizAttemptRepository.findByStudentId(student.getId())
                 .stream()
                 .map(this::mapToAttemptResponse)
                 .collect(Collectors.toList());
     }
 
-    // GET attempts for a specific quiz — instructor only
     public List<QuizAttemptResponse> getAttemptsByQuiz(Long quizId,
                                                          String instructorEmail) {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() ->
                     new ResourceNotFoundException("Quiz", "id", quizId));
 
-        if (!quiz.getCourse().getInstructor().getEmail().equals(instructorEmail)) {
-            throw new UnauthorizedException("You are not allowed to view these attempts");
+        if (!quiz.getCourse().getInstructor().getEmail()
+                .equals(instructorEmail)) {
+            throw new UnauthorizedException(
+                    "You are not allowed to view these attempts");
         }
 
         return quizAttemptRepository.findByQuizId(quizId)
@@ -198,9 +219,9 @@ public class QuizService {
                 .collect(Collectors.toList());
     }
 
-    // MAPPERS
     private QuizResponse mapToQuizResponse(Quiz quiz) {
-        int totalQuestions = (int) questionRepository.countByQuizId(quiz.getId());
+        int totalQuestions = (int) questionRepository
+                .countByQuizId(quiz.getId());
         return new QuizResponse(
                 quiz.getId(),
                 quiz.getTitle(),

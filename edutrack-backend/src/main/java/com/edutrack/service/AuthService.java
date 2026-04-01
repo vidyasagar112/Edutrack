@@ -24,11 +24,12 @@ import com.edutrack.security.JwtTokenProvider;
 @Service
 public class AuthService {
 
-    @Autowired private UserRepository      userRepository;
-    @Autowired private RoleRepository      roleRepository;
-    @Autowired private PasswordEncoder     passwordEncoder;
+    @Autowired private UserRepository        userRepository;
+    @Autowired private RoleRepository        roleRepository;
+    @Autowired private PasswordEncoder       passwordEncoder;
     @Autowired private AuthenticationManager authenticationManager;
-    @Autowired private JwtTokenProvider    jwtTokenProvider;
+    @Autowired private JwtTokenProvider      jwtTokenProvider;
+    @Autowired private EmailService          emailService;
 
     public AuthResponse register(RegisterRequest request) {
 
@@ -56,6 +57,9 @@ public class AuthService {
         user.setRoles(roles);
 
         userRepository.save(user);
+
+        // send welcome email
+        emailService.sendWelcomeEmail(user.getEmail(), user.getFullName());
 
         // generate JWT token
         Authentication authentication = authenticationManager.authenticate(
