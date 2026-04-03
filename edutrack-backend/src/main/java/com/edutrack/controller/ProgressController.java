@@ -23,9 +23,8 @@ public class ProgressController {
     @Autowired
     private ProgressService progressService;
 
-    // GET /api/progress/my — student sees own progress
     @GetMapping("/my")
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasAuthority('ROLE_STUDENT')")
     public ResponseEntity<ApiResponse<ProgressResponse>> getMyProgress(
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(ApiResponse.success(
@@ -33,19 +32,18 @@ public class ProgressController {
                         userDetails.getUsername())));
     }
 
-    // GET /api/progress/student/{id} — instructor/admin sees student progress
     @GetMapping("/student/{id}")
-    @PreAuthorize("hasAnyRole('INSTRUCTOR','ADMIN')")
-    public ResponseEntity<ApiResponse<ProgressResponse>> getStudentProgress(
-            @PathVariable Long id) {
+    @PreAuthorize("hasAnyAuthority('ROLE_INSTRUCTOR','ROLE_ADMIN')")
+    public ResponseEntity<ApiResponse<ProgressResponse>>
+            getStudentProgress(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.success(
                 progressService.getStudentProgressById(id)));
     }
 
-    // GET /api/progress/course/{courseId} — instructor sees all students progress
     @GetMapping("/course/{courseId}")
-    @PreAuthorize("hasAnyRole('INSTRUCTOR','ADMIN')")
-    public ResponseEntity<ApiResponse<List<ProgressResponse>>> getCourseProgress(
+    @PreAuthorize("hasAnyAuthority('ROLE_INSTRUCTOR','ROLE_ADMIN')")
+    public ResponseEntity<ApiResponse<List<ProgressResponse>>>
+            getCourseProgress(
             @PathVariable Long courseId,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(ApiResponse.success(

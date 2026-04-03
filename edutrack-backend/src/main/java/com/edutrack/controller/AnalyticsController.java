@@ -21,9 +21,8 @@ public class AnalyticsController {
     @Autowired
     private AnalyticsService analyticsService;
 
-    // GET /api/analytics/my — student sees own analytics
     @GetMapping("/my")
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasAuthority('ROLE_STUDENT')")
     public ResponseEntity<ApiResponse<AnalyticsResponse>> getMyAnalytics(
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(ApiResponse.success(
@@ -31,11 +30,10 @@ public class AnalyticsController {
                         userDetails.getUsername())));
     }
 
-    // GET /api/analytics/student/{id} — instructor/admin sees student analytics
     @GetMapping("/student/{id}")
-    @PreAuthorize("hasAnyRole('INSTRUCTOR','ADMIN')")
-    public ResponseEntity<ApiResponse<AnalyticsResponse>> getStudentAnalytics(
-            @PathVariable Long id) {
+    @PreAuthorize("hasAnyAuthority('ROLE_INSTRUCTOR','ROLE_ADMIN')")
+    public ResponseEntity<ApiResponse<AnalyticsResponse>>
+            getStudentAnalytics(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.success(
                 analyticsService.getStudentAnalytics(id)));
     }

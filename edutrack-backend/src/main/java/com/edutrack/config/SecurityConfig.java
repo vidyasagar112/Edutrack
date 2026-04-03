@@ -36,27 +36,22 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-
-                // ===== PUBLIC ENDPOINTS =====
                 .requestMatchers("/api/auth/**").permitAll()
-
-                // ===== SWAGGER UI =====
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/swagger-ui.html").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
                 .requestMatchers("/v3/api-docs").permitAll()
-
-                // ===== ROLE BASED =====
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/instructor/**").hasAnyRole("ADMIN", "INSTRUCTOR")
-
-                // ===== ALL OTHERS NEED LOGIN =====
+                .requestMatchers("/api/admin/**")
+                    .hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/api/instructor/**")
+                    .hasAuthority("ROLE_INSTRUCTOR")
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter,

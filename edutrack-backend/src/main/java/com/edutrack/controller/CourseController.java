@@ -31,32 +31,29 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
-    // GET all published — public
     @GetMapping
-    public ResponseEntity<ApiResponse<List<CourseResponse>>> getAllPublished() {
-        return ResponseEntity.ok(
-                ApiResponse.success(courseService.getAllPublishedCourses()));
+    public ResponseEntity<ApiResponse<List<CourseResponse>>>
+            getAllPublished() {
+        return ResponseEntity.ok(ApiResponse.success(
+                courseService.getAllPublishedCourses()));
     }
 
-    // GET by id — public
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<CourseResponse>> getCourseById(
             @PathVariable Long id) {
-        return ResponseEntity.ok(
-                ApiResponse.success(courseService.getCourseById(id)));
+        return ResponseEntity.ok(ApiResponse.success(
+                courseService.getCourseById(id)));
     }
 
-    // GET search — public
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<CourseResponse>>> search(
             @RequestParam String keyword) {
-        return ResponseEntity.ok(
-                ApiResponse.success(courseService.searchCourses(keyword)));
+        return ResponseEntity.ok(ApiResponse.success(
+                courseService.searchCourses(keyword)));
     }
 
-    // GET my courses — instructor only
     @GetMapping("/my-courses")
-    @PreAuthorize("hasAnyRole('INSTRUCTOR','ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_INSTRUCTOR','ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<List<CourseResponse>>> getMyCourses(
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(ApiResponse.success(
@@ -64,9 +61,8 @@ public class CourseController {
                         userDetails.getUsername())));
     }
 
-    // POST create — instructor only
     @PostMapping
-    @PreAuthorize("hasAnyRole('INSTRUCTOR','ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_INSTRUCTOR','ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<CourseResponse>> createCourse(
             @Valid @RequestBody CourseRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
@@ -76,9 +72,8 @@ public class CourseController {
                         request, userDetails.getUsername())));
     }
 
-    // PUT update — instructor only
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('INSTRUCTOR','ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_INSTRUCTOR','ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<CourseResponse>> updateCourse(
             @PathVariable Long id,
             @Valid @RequestBody CourseRequest request,
@@ -89,14 +84,13 @@ public class CourseController {
                         id, request, userDetails.getUsername())));
     }
 
-    // DELETE — instructor only
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('INSTRUCTOR','ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_INSTRUCTOR','ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deleteCourse(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetails userDetails) {
         courseService.deleteCourse(id, userDetails.getUsername());
-        return ResponseEntity.ok(
-                ApiResponse.success("Course deleted successfully", null));
+        return ResponseEntity.ok(ApiResponse.success(
+                "Course deleted successfully", null));
     }
 }

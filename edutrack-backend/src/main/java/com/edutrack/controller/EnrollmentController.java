@@ -30,30 +30,31 @@ public class EnrollmentController {
     @Autowired
     private EnrollmentService enrollmentService;
 
-    // POST /api/enrollments — student enrolls in a course
     @PostMapping
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasAuthority('ROLE_STUDENT')")
     public ResponseEntity<ApiResponse<EnrollmentResponse>> enroll(
             @Valid @RequestBody EnrollmentRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(ApiResponse.success(
                 "Enrolled successfully",
-                enrollmentService.enroll(request, userDetails.getUsername())));
+                enrollmentService.enroll(
+                        request, userDetails.getUsername())));
     }
 
-    // GET /api/enrollments/my — student sees their enrollments
     @GetMapping("/my")
-    @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<ApiResponse<List<EnrollmentResponse>>> getMyEnrollments(
+    @PreAuthorize("hasAuthority('ROLE_STUDENT')")
+    public ResponseEntity<ApiResponse<List<EnrollmentResponse>>>
+            getMyEnrollments(
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(ApiResponse.success(
-                enrollmentService.getMyEnrollments(userDetails.getUsername())));
+                enrollmentService.getMyEnrollments(
+                        userDetails.getUsername())));
     }
 
-    // GET /api/enrollments/course/{courseId} — instructor sees enrollments
     @GetMapping("/course/{courseId}")
-    @PreAuthorize("hasAnyRole('INSTRUCTOR','ADMIN')")
-    public ResponseEntity<ApiResponse<List<EnrollmentResponse>>> getByCourse(
+    @PreAuthorize("hasAnyAuthority('ROLE_INSTRUCTOR','ROLE_ADMIN')")
+    public ResponseEntity<ApiResponse<List<EnrollmentResponse>>>
+            getByCourse(
             @PathVariable Long courseId,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(ApiResponse.success(
@@ -61,9 +62,8 @@ public class EnrollmentController {
                         courseId, userDetails.getUsername())));
     }
 
-    // PATCH /api/enrollments/{id}/progress — student updates progress
     @PatchMapping("/{id}/progress")
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasAuthority('ROLE_STUDENT')")
     public ResponseEntity<ApiResponse<EnrollmentResponse>> updateProgress(
             @PathVariable Long id,
             @RequestParam int percent,
@@ -74,14 +74,13 @@ public class EnrollmentController {
                         id, percent, userDetails.getUsername())));
     }
 
-    // PATCH /api/enrollments/{id}/drop — student drops a course
     @PatchMapping("/{id}/drop")
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasAuthority('ROLE_STUDENT')")
     public ResponseEntity<ApiResponse<Void>> drop(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetails userDetails) {
         enrollmentService.dropEnrollment(id, userDetails.getUsername());
-        return ResponseEntity.ok(
-                ApiResponse.success("Enrollment dropped", null));
+        return ResponseEntity.ok(ApiResponse.success(
+                "Enrollment dropped", null));
     }
 }

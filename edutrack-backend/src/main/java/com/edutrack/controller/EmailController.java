@@ -22,15 +22,14 @@ public class EmailController {
     @Autowired
     private EmailService emailService;
 
-    // POST /api/email/send — admin sends custom email to user
     @PostMapping("/send/{userId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<Void>> sendCustomEmail(
             @PathVariable Long userId,
             @Valid @RequestBody EmailRequest request) {
-        emailService.sendCustomEmail(userId, request.getSubject(),
-                request.getBody());
-        return ResponseEntity.ok(
-                ApiResponse.success("Email sent successfully", null));
+        emailService.sendCustomEmail(
+                userId, request.getSubject(), request.getBody());
+        return ResponseEntity.ok(ApiResponse.success(
+                "Email sent successfully", null));
     }
 }

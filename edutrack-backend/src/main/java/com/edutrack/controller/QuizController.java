@@ -33,104 +33,100 @@ public class QuizController {
     @Autowired
     private QuizService quizService;
 
-    // POST /api/quizzes — instructor creates quiz
     @PostMapping
-    @PreAuthorize("hasAnyRole('INSTRUCTOR','ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_INSTRUCTOR','ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<QuizResponse>> createQuiz(
             @Valid @RequestBody QuizRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(ApiResponse.success(
                 "Quiz created successfully",
-                quizService.createQuiz(request, userDetails.getUsername())));
+                quizService.createQuiz(
+                        request, userDetails.getUsername())));
     }
 
-    // GET /api/quizzes/course/{courseId} — get all quizzes of a course
     @GetMapping("/course/{courseId}")
     public ResponseEntity<ApiResponse<List<QuizResponse>>> getByCourse(
             @PathVariable Long courseId) {
-        return ResponseEntity.ok(
-                ApiResponse.success(quizService.getQuizzesByCourse(courseId)));
+        return ResponseEntity.ok(ApiResponse.success(
+                quizService.getQuizzesByCourse(courseId)));
     }
 
-    // GET /api/quizzes/{id}
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<QuizResponse>> getById(
             @PathVariable Long id) {
-        return ResponseEntity.ok(
-                ApiResponse.success(quizService.getQuizById(id)));
+        return ResponseEntity.ok(ApiResponse.success(
+                quizService.getQuizById(id)));
     }
 
-    // DELETE /api/quizzes/{id} — instructor only
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('INSTRUCTOR','ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_INSTRUCTOR','ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deleteQuiz(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetails userDetails) {
         quizService.deleteQuiz(id, userDetails.getUsername());
-        return ResponseEntity.ok(
-                ApiResponse.success("Quiz deleted successfully", null));
+        return ResponseEntity.ok(ApiResponse.success(
+                "Quiz deleted successfully", null));
     }
 
-    // POST /api/quizzes/{quizId}/questions — add question
     @PostMapping("/{quizId}/questions")
-    @PreAuthorize("hasAnyRole('INSTRUCTOR','ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_INSTRUCTOR','ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<QuestionResponse>> addQuestion(
             @PathVariable Long quizId,
             @Valid @RequestBody QuestionRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(ApiResponse.success(
                 "Question added successfully",
-                quizService.addQuestion(quizId, request, userDetails.getUsername())));
+                quizService.addQuestion(
+                        quizId, request, userDetails.getUsername())));
     }
 
-    // GET /api/quizzes/{quizId}/questions
     @GetMapping("/{quizId}/questions")
-    public ResponseEntity<ApiResponse<List<QuestionResponse>>> getQuestions(
-            @PathVariable Long quizId) {
-        return ResponseEntity.ok(
-                ApiResponse.success(quizService.getQuestionsByQuiz(quizId)));
+    public ResponseEntity<ApiResponse<List<QuestionResponse>>>
+            getQuestions(@PathVariable Long quizId) {
+        return ResponseEntity.ok(ApiResponse.success(
+                quizService.getQuestionsByQuiz(quizId)));
     }
 
-    // DELETE /api/quizzes/questions/{questionId} — instructor only
     @DeleteMapping("/questions/{questionId}")
-    @PreAuthorize("hasAnyRole('INSTRUCTOR','ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_INSTRUCTOR','ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deleteQuestion(
             @PathVariable Long questionId,
             @AuthenticationPrincipal UserDetails userDetails) {
-        quizService.deleteQuestion(questionId, userDetails.getUsername());
-        return ResponseEntity.ok(
-                ApiResponse.success("Question deleted successfully", null));
+        quizService.deleteQuestion(
+                questionId, userDetails.getUsername());
+        return ResponseEntity.ok(ApiResponse.success(
+                "Question deleted successfully", null));
     }
 
-    // POST /api/quizzes/attempt — student submits quiz
     @PostMapping("/attempt")
-    @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<ApiResponse<QuizAttemptResponse>> submitAttempt(
+    @PreAuthorize("hasAuthority('ROLE_STUDENT')")
+    public ResponseEntity<ApiResponse<QuizAttemptResponse>>
+            submitAttempt(
             @Valid @RequestBody QuizAttemptRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(ApiResponse.success(
                 "Quiz submitted successfully",
-                quizService.submitAttempt(request, userDetails.getUsername())));
+                quizService.submitAttempt(
+                        request, userDetails.getUsername())));
     }
 
-    // GET /api/quizzes/attempts/my — student sees their attempts
     @GetMapping("/attempts/my")
-    @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<ApiResponse<List<QuizAttemptResponse>>> getMyAttempts(
+    @PreAuthorize("hasAuthority('ROLE_STUDENT')")
+    public ResponseEntity<ApiResponse<List<QuizAttemptResponse>>>
+            getMyAttempts(
             @AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(
-                ApiResponse.success(quizService.getMyAttempts(
-                        userDetails.getUsername())));
+        return ResponseEntity.ok(ApiResponse.success(
+                quizService.getMyAttempts(userDetails.getUsername())));
     }
 
-    // GET /api/quizzes/{quizId}/attempts — instructor sees all attempts
     @GetMapping("/{quizId}/attempts")
-    @PreAuthorize("hasAnyRole('INSTRUCTOR','ADMIN')")
-    public ResponseEntity<ApiResponse<List<QuizAttemptResponse>>> getAttemptsByQuiz(
+    @PreAuthorize("hasAnyAuthority('ROLE_INSTRUCTOR','ROLE_ADMIN')")
+    public ResponseEntity<ApiResponse<List<QuizAttemptResponse>>>
+            getAttemptsByQuiz(
             @PathVariable Long quizId,
             @AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(
-                ApiResponse.success(quizService.getAttemptsByQuiz(
+        return ResponseEntity.ok(ApiResponse.success(
+                quizService.getAttemptsByQuiz(
                         quizId, userDetails.getUsername())));
     }
 }
