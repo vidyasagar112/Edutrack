@@ -1,0 +1,33 @@
+.welcome-banner {
+  background: linear-gradient(135deg, #1F4E79, #2E75B6);
+}
+
+.stat-card {
+  border-radius: 15px;
+  transition: transform 0.3s;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+}
+
+.stat-icon {
+  font-size: 2rem;
+}
+
+.enrollment-item {
+  background: #f8f9fa;
+  transition: background 0.2s;
+}
+
+.enrollment-item:hover {
+  background: #e8f0fe;
+}
+
+.attempt-item {
+  background: #f8f9fa;
+}
+
+.attempt-item:hover {
+  background: #e8f0fe;
+}

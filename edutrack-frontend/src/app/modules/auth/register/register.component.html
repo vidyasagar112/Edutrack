@@ -1,0 +1,93 @@
+<div class="register-page d-flex align-items-center justify-content-center py-5">
+  <div class="card register-card shadow-lg p-4">
+
+    <!-- Logo -->
+    <div class="text-center mb-4">
+      <h2 class="fw-bold" style="color: #1F4E79;">🎓 EduTrack</h2>
+      <p class="text-muted">Create your account</p>
+    </div>
+
+    <!-- Error -->
+    <div class="alert alert-danger" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Full Name -->
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Full Name</label>
+      <input
+        type="text"
+        class="form-control form-control-lg"
+        placeholder="Enter your full name"
+        [(ngModel)]="fullName"
+      />
+    </div>
+
+    <!-- Email -->
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Email Address</label>
+      <input
+        type="email"
+        class="form-control form-control-lg"
+        placeholder="Enter your email"
+        [(ngModel)]="email"
+      />
+    </div>
+
+    <!-- Password -->
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Password</label>
+      <input
+        type="password"
+        class="form-control form-control-lg"
+        placeholder="Min 6 characters"
+        [(ngModel)]="password"
+      />
+    </div>
+
+    <!-- Role -->
+    <div class="mb-4">
+      <label class="form-label fw-semibold">I want to join as</label>
+      <div class="d-flex gap-3">
+        <div
+          class="role-card flex-1 p-3 text-center"
+          [class.selected]="role === 'STUDENT'"
+          (click)="role = 'STUDENT'">
+          <div class="fs-2">🎓</div>
+          <div class="fw-semibold">Student</div>
+          <small class="text-muted">Learn & take quizzes</small>
+        </div>
+        <div
+          class="role-card flex-1 p-3 text-center"
+          [class.selected]="role === 'INSTRUCTOR'"
+          (click)="role = 'INSTRUCTOR'">
+          <div class="fs-2">👨‍🏫</div>
+          <div class="fw-semibold">Instructor</div>
+          <small class="text-muted">Create & teach courses</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Register Button -->
+    <button
+      class="btn btn-primary btn-lg w-100 fw-bold"
+      (click)="register()"
+      [disabled]="isLoading">
+      <span *ngIf="isLoading"
+        class="spinner-border spinner-border-sm me-2">
+      </span>
+      {{ isLoading ? 'Creating Account...' : 'Create Account' }}
+    </button>
+
+    <!-- Login Link -->
+    <div class="text-center mt-3">
+      <p class="text-muted">
+        Already have an account?
+        <a routerLink="/login" class="text-primary fw-semibold">
+          Login here
+        </a>
+      </p>
+    </div>
+
+  </div>
+</div>

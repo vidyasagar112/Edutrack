@@ -1,0 +1,19 @@
+.hero-section {
+  background: linear-gradient(135deg, #1F4E79, #2E75B6);
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+}
+
+.feature-card {
+  border-radius: 15px;
+  transition: transform 0.3s;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+}
+
+.feature-icon {
+  font-size: 3rem;
+}
