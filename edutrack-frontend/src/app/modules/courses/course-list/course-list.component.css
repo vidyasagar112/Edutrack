@@ -1,0 +1,24 @@
+.search-bar .form-control {
+  border-radius: 0 10px 10px 0;
+  border-color: #dee2e6;
+}
+
+.search-bar .input-group-text {
+  border-radius: 10px 0 0 10px;
+  border-color: #dee2e6;
+}
+
+.course-card {
+  border-radius: 15px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.course-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+}
+
+.course-banner {
+  height: 140px;
+  border-radius: 15px 15px 0 0;
+}

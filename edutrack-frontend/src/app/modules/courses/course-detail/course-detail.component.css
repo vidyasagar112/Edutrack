@@ -1,0 +1,13 @@
+.course-header {
+  background: linear-gradient(135deg, #1F4E79, #2E75B6);
+}
+
+.quiz-card {
+  background: #f8f9fa;
+  transition: all 0.3s;
+}
+
+.quiz-card:hover {
+  background: #e8f0fe;
+  border-color: #2E75B6 !important;
+}

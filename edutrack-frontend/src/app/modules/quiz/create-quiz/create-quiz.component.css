@@ -1,0 +1,39 @@
+.form-control, .form-select {
+  border-radius: 10px;
+  border: 1px solid #dee2e6;
+}
+
+.difficulty-card {
+  border: 2px solid #dee2e6;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.difficulty-card:hover {
+  border-color: #2E75B6;
+}
+
+.selected-easy {
+  border-color: #198754 !important;
+  background: #d1e7dd;
+  color: #198754;
+}
+
+.selected-medium {
+  border-color: #ffc107 !important;
+  background: #fff3cd;
+  color: #664d03;
+}
+
+.selected-hard {
+  border-color: #dc3545 !important;
+  background: #f8d7da;
+  color: #842029;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #1F4E79, #2E75B6);
+  border: none;
+  border-radius: 10px;
+}

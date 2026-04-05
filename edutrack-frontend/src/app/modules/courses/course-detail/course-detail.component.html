@@ -1,1 +1,96 @@
-<p>course-detail works!</p>
+<div class="container py-4" *ngIf="!isLoading && course">
+
+  <!-- Course Header -->
+  <div class="course-header p-4 mb-4 text-white rounded-3">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <span class="badge bg-warning text-dark mb-2">
+          {{ course.subject }}
+        </span>
+        <h2 class="fw-bold mb-2">{{ course.title }}</h2>
+        <p class="opacity-75 mb-3">{{ course.description }}</p>
+        <div class="d-flex gap-4">
+          <span>👨‍🏫 {{ course.instructorName }}</span>
+          <span>👥 {{ course.enrollmentCount }} students</span>
+        </div>
+      </div>
+      <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <div *ngIf="successMessage"
+          class="alert alert-success mb-2">
+          ✅ {{ successMessage }}
+        </div>
+        <div *ngIf="errorMessage"
+          class="alert alert-warning mb-2">
+          ⚠️ {{ errorMessage }}
+        </div>
+        <button *ngIf="isStudent && !successMessage"
+          class="btn btn-warning btn-lg fw-bold"
+          (click)="enroll()"
+          [disabled]="isEnrolling">
+          <span *ngIf="isEnrolling"
+            class="spinner-border spinner-border-sm me-2">
+          </span>
+          {{ isEnrolling ? 'Enrolling...' : '🎓 Enroll Now' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quizzes Section -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-0 pt-3">
+      <h5 class="fw-bold mb-0" style="color:#1F4E79;">
+        📝 Quizzes in This Course
+      </h5>
+    </div>
+    <div class="card-body">
+      <div *ngIf="quizzes.length === 0"
+        class="text-center py-4">
+        <p class="text-muted">
+          No quizzes available yet for this course.
+        </p>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-6"
+          *ngFor="let quiz of quizzes">
+          <div class="quiz-card p-3 rounded-3 border">
+            <div class="d-flex justify-content-between
+                        align-items-start mb-2">
+              <h6 class="fw-bold mb-0">{{ quiz.title }}</h6>
+              <span class="badge"
+                [ngClass]="getDifficultyColor(quiz.difficulty)">
+                {{ quiz.difficulty }}
+              </span>
+            </div>
+            <p class="text-muted small mb-2">
+              {{ quiz.description }}
+            </p>
+            <div class="d-flex justify-content-between
+                        align-items-center">
+              <div class="small text-muted">
+                <span class="me-3">
+                  ❓ {{ quiz.totalQuestions }} questions
+                </span>
+                <span>⏱️ {{ quiz.timeLimitMinutes }} mins</span>
+              </div>
+              <a *ngIf="isStudent"
+                [routerLink]="['/quiz', quiz.id]"
+                class="btn btn-primary btn-sm">
+                Attempt →
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Loading -->
+<div class="text-center py-5" *ngIf="isLoading">
+  <div class="spinner-border text-primary"
+    style="width:3rem;height:3rem;">
+  </div>
+  <p class="mt-3 text-muted">Loading course...</p>
+</div>

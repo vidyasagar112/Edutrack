@@ -1,0 +1,114 @@
+<div class="container py-4">
+
+  <div class="d-flex align-items-center mb-4">
+    <a [routerLink]="['/courses', courseId]"
+      class="btn btn-outline-secondary me-3">
+      ← Back
+    </a>
+    <div>
+      <h3 class="fw-bold mb-0" style="color:#1F4E79;">
+        📝 Create New Quiz
+      </h3>
+      <p class="text-muted mb-0">
+        Add a quiz to your course
+      </p>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-md-7">
+      <div class="card border-0 shadow-sm p-4">
+
+        <div class="alert alert-success" *ngIf="successMessage">
+          ✅ {{ successMessage }}
+        </div>
+        <div class="alert alert-danger" *ngIf="errorMessage">
+          ❌ {{ errorMessage }}
+        </div>
+
+        <!-- Title -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">
+            Quiz Title <span class="text-danger">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-control form-control-lg"
+            placeholder="e.g. Java Basics Quiz"
+            [(ngModel)]="title"
+          />
+        </div>
+
+        <!-- Description -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">
+            Description
+          </label>
+          <textarea
+            class="form-control"
+            rows="3"
+            placeholder="What will this quiz test?"
+            [(ngModel)]="description">
+          </textarea>
+        </div>
+
+        <!-- Difficulty -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">
+            Difficulty <span class="text-danger">*</span>
+          </label>
+          <div class="d-flex gap-3">
+            <div class="difficulty-card p-3 text-center flex-grow-1"
+              [class.selected-easy]="difficulty === 'EASY'"
+              (click)="difficulty = 'EASY'">
+              <div class="fs-4">😊</div>
+              <div class="fw-semibold">Easy</div>
+            </div>
+            <div class="difficulty-card p-3 text-center flex-grow-1"
+              [class.selected-medium]="difficulty === 'MEDIUM'"
+              (click)="difficulty = 'MEDIUM'">
+              <div class="fs-4">🤔</div>
+              <div class="fw-semibold">Medium</div>
+            </div>
+            <div class="difficulty-card p-3 text-center flex-grow-1"
+              [class.selected-hard]="difficulty === 'HARD'"
+              (click)="difficulty = 'HARD'">
+              <div class="fs-4">🔥</div>
+              <div class="fw-semibold">Hard</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Time Limit -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold">
+            Time Limit: {{ timeLimitMinutes }} minutes
+          </label>
+          <input
+            type="range"
+            class="form-range"
+            min="5" max="120" step="5"
+            [(ngModel)]="timeLimitMinutes"
+          />
+          <div class="d-flex justify-content-between">
+            <small class="text-muted">5 min</small>
+            <small class="text-muted">120 min</small>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button
+          class="btn btn-primary btn-lg w-100 fw-bold"
+          (click)="createQuiz()"
+          [disabled]="isLoading">
+          <span *ngIf="isLoading"
+            class="spinner-border spinner-border-sm me-2">
+          </span>
+          {{ isLoading ? 'Creating...' : '✅ Create Quiz & Add Questions' }}
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -39,6 +39,27 @@ export const routes: Routes = [
         .then(m => m.CourseListComponent)
   },
   {
+  path: 'courses/create',
+  canActivate: [authGuard],
+  loadComponent: () =>
+    import('./modules/courses/create-course/create-course.component')
+      .then(m => m.CreateCourseComponent)
+},
+{
+  path: 'quiz/create/:courseId',
+  canActivate: [authGuard],
+  loadComponent: () =>
+    import('./modules/quiz/create-quiz/create-quiz.component')
+      .then(m => m.CreateQuizComponent)
+},
+{
+  path: 'quiz/:quizId/add-question',
+  canActivate: [authGuard],
+  loadComponent: () =>
+    import('./modules/quiz/add-question/add-question.component')
+      .then(m => m.AddQuestionComponent)
+},
+  {
     path: 'courses/:id',
     canActivate: [authGuard],
     loadComponent: () =>

@@ -1,0 +1,23 @@
+.progress-banner {
+  background: linear-gradient(135deg, #0f766e, #0d9488);
+}
+
+.stat-card {
+  border-radius: 12px;
+  transition: transform 0.3s;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+}
+
+.course-progress-item {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  transition: all 0.3s;
+}
+
+.course-progress-item:hover {
+  background: #e8f0fe;
+  border-color: #2E75B6;
+}

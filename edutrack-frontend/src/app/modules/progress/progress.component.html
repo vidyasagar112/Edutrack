@@ -1,1 +1,143 @@
-<p>progress works!</p>
+<div class="container py-4">
+
+  <!-- Header -->
+  <div class="progress-banner p-4 mb-4 text-white rounded-3">
+    <h3 class="fw-bold mb-1">📈 My Learning Progress</h3>
+    <p class="mb-0 opacity-75">
+      Track your progress across all enrolled courses
+    </p>
+  </div>
+
+  <!-- Loading -->
+  <div class="text-center py-5" *ngIf="isLoading">
+    <div class="spinner-border text-primary"
+      style="width:3rem;height:3rem;">
+    </div>
+    <p class="mt-3 text-muted">Loading progress...</p>
+  </div>
+
+  <div *ngIf="!isLoading && progress">
+
+    <!-- Overall Stats -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-3 col-6">
+        <div class="stat-card card border-0 shadow-sm p-3
+                    text-center">
+          <h3 class="fw-bold text-primary">
+            {{ progress.totalEnrolledCourses }}
+          </h3>
+          <p class="text-muted small mb-0">Total Enrolled</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-card card border-0 shadow-sm p-3
+                    text-center">
+          <h3 class="fw-bold text-success">
+            {{ progress.completedCourses }}
+          </h3>
+          <p class="text-muted small mb-0">Completed</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-card card border-0 shadow-sm p-3
+                    text-center">
+          <h3 class="fw-bold text-warning">
+            {{ progress.inProgressCourses }}
+          </h3>
+          <p class="text-muted small mb-0">In Progress</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-card card border-0 shadow-sm p-3
+                    text-center">
+          <h3 class="fw-bold text-info">
+            {{ progress.overallProgressPercent }}%
+          </h3>
+          <p class="text-muted small mb-0">Overall Progress</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Overall Progress Bar -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between mb-2">
+          <span class="fw-semibold">Overall Learning Progress</span>
+          <span class="fw-bold text-primary">
+            {{ progress.overallProgressPercent }}%
+          </span>
+        </div>
+        <div class="progress" style="height:15px;border-radius:10px;">
+          <div class="progress-bar bg-primary"
+            [style.width.%]="progress.overallProgressPercent"
+            style="border-radius:10px;">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Course Details -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-0 pt-3">
+        <h5 class="fw-bold mb-0" style="color:#1F4E79;">
+          📚 Course Progress Details
+        </h5>
+      </div>
+      <div class="card-body">
+        <div *ngIf="progress.courseDetails?.length === 0"
+          class="text-center py-4">
+          <p class="text-muted">No courses enrolled yet!</p>
+          <a routerLink="/courses" class="btn btn-primary">
+            Browse Courses
+          </a>
+        </div>
+        <div *ngFor="let course of progress.courseDetails"
+          class="course-progress-item mb-4 p-3 rounded-3">
+          <div class="d-flex justify-content-between
+                      align-items-start mb-3">
+            <div>
+              <h6 class="fw-bold mb-1">{{ course.courseTitle }}</h6>
+              <small class="text-muted">
+                {{ course.courseSubject }} •
+                👨‍🏫 {{ course.instructorName }}
+              </small>
+            </div>
+            <span class="badge"
+              [ngClass]="getStatusColor(course.status)">
+              {{ course.status }}
+            </span>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="d-flex align-items-center gap-3">
+            <div class="progress flex-grow-1" style="height:12px;
+                        border-radius:10px;">
+              <div class="progress-bar"
+                [ngClass]="getProgressColor(course.progressPercent)"
+                [style.width.%]="course.progressPercent"
+                style="border-radius:10px;">
+              </div>
+            </div>
+            <span class="fw-bold"
+              [class.text-success]="course.progressPercent >= 75"
+              [class.text-warning]="course.progressPercent >= 50
+                && course.progressPercent < 75"
+              [class.text-info]="course.progressPercent < 50">
+              {{ course.progressPercent }}%
+            </span>
+          </div>
+
+          <!-- Quiz Stats -->
+          <div class="mt-2 d-flex gap-3">
+            <small class="text-muted">
+              📝 {{ course.attemptedQuizzes }}/
+              {{ course.totalQuizzes }} quizzes attempted
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

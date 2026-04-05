@@ -1,1 +1,207 @@
-<p>analytics works!</p>
+<div class="container py-4">
+
+  <!-- Header -->
+  <div class="analytics-banner p-4 mb-4 text-white rounded-3">
+    <h3 class="fw-bold mb-1">📊 My Performance Analytics</h3>
+    <p class="mb-0 opacity-75">
+      AI-powered insights into your learning journey
+    </p>
+  </div>
+
+  <!-- Loading -->
+  <div class="text-center py-5" *ngIf="isLoading">
+    <div class="spinner-border text-primary"
+      style="width:3rem;height:3rem;">
+    </div>
+    <p class="mt-3 text-muted">Loading analytics...</p>
+  </div>
+
+  <div *ngIf="!isLoading && analytics">
+
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-2 col-6">
+        <div class="stat-card card border-0 shadow-sm p-3 text-center">
+          <h3 class="fw-bold text-primary">
+            {{ analytics.totalQuizzesAttempted }}
+          </h3>
+          <p class="text-muted small mb-0">Total Quizzes</p>
+        </div>
+      </div>
+      <div class="col-md-2 col-6">
+        <div class="stat-card card border-0 shadow-sm p-3 text-center">
+          <h3 class="fw-bold text-info">
+            {{ analytics.averagePercentage }}%
+          </h3>
+          <p class="text-muted small mb-0">Average Score</p>
+        </div>
+      </div>
+      <div class="col-md-2 col-6">
+        <div class="stat-card card border-0 shadow-sm p-3 text-center">
+          <h3 class="fw-bold text-success">
+            {{ analytics.highestScore }}
+          </h3>
+          <p class="text-muted small mb-0">Highest Score</p>
+        </div>
+      </div>
+      <div class="col-md-2 col-6">
+        <div class="stat-card card border-0 shadow-sm p-3 text-center">
+          <h3 class="fw-bold text-danger">
+            {{ analytics.lowestScore }}
+          </h3>
+          <p class="text-muted small mb-0">Lowest Score</p>
+        </div>
+      </div>
+      <div class="col-md-2 col-6">
+        <div class="stat-card card border-0 shadow-sm p-3 text-center">
+          <h3 class="fw-bold text-success">
+            {{ analytics.totalPassed }}
+          </h3>
+          <p class="text-muted small mb-0">Passed</p>
+        </div>
+      </div>
+      <div class="col-md-2 col-6">
+        <div class="stat-card card border-0 shadow-sm p-3 text-center">
+          <h3 class="fw-bold text-danger">
+            {{ analytics.totalFailed }}
+          </h3>
+          <p class="text-muted small mb-0">Failed</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- Subject Performance -->
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-white border-0 pt-3">
+            <h5 class="fw-bold mb-0" style="color:#1F4E79;">
+              📚 Subject Performance
+            </h5>
+          </div>
+          <div class="card-body">
+            <div *ngIf="analytics.subjectPerformances?.length === 0"
+              class="text-center py-3">
+              <p class="text-muted">No data yet</p>
+            </div>
+            <div *ngFor="let subject of analytics.subjectPerformances"
+              class="mb-4">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="fw-semibold">
+                  {{ getLevelIcon(subject.level) }}
+                  {{ subject.subject }}
+                </span>
+                <span class="badge"
+                  [ngClass]="getLevelColor(subject.level)">
+                  {{ subject.level }}
+                </span>
+              </div>
+              <div class="progress mb-1" style="height:10px;">
+                <div class="progress-bar"
+                  [ngClass]="getProgressColor(
+                    subject.averagePercentage)"
+                  [style.width.%]="subject.averagePercentage">
+                </div>
+              </div>
+              <small class="text-muted">
+                {{ subject.averagePercentage }}% average
+                ({{ subject.totalAttempts }} attempts)
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Suggestions -->
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-white border-0 pt-3">
+            <h5 class="fw-bold mb-0" style="color:#1F4E79;">
+              🤖 AI Suggestions
+            </h5>
+          </div>
+          <div class="card-body">
+            <div *ngFor="let suggestion of analytics.suggestions"
+              class="suggestion-item p-3 mb-3 rounded-3">
+              <span class="me-2">💡</span>
+              {{ suggestion }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz History -->
+      <div class="col-12">
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-white border-0 pt-3">
+            <h5 class="fw-bold mb-0" style="color:#1F4E79;">
+              📝 Quiz History
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th>Quiz</th>
+                    <th>Subject</th>
+                    <th>Score</th>
+                    <th>Percentage</th>
+                    <th>Result</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let quiz of analytics.quizDetails">
+                    <td class="fw-semibold">
+                      {{ quiz.quizTitle }}
+                    </td>
+                    <td>
+                      <span class="badge bg-light text-dark">
+                        {{ quiz.subject }}
+                      </span>
+                    </td>
+                    <td>
+                      {{ quiz.score }}/{{ quiz.totalQuestions }}
+                    </td>
+                    <td>
+                      <div class="progress" style="height:6px;
+                                  width:80px;">
+                        <div class="progress-bar"
+                          [ngClass]="getProgressColor(
+                            quiz.percentage)"
+                          [style.width.%]="quiz.percentage">
+                        </div>
+                      </div>
+                      <small>{{ quiz.percentage }}%</small>
+                    </td>
+                    <td>
+                      <span class="badge"
+                        [class.bg-success]="quiz.result==='PASS'"
+                        [class.bg-danger]="quiz.result==='FAIL'">
+                        {{ quiz.result }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- No Data -->
+  <div class="text-center py-5"
+    *ngIf="!isLoading && !analytics">
+    <p class="text-muted fs-5">
+      No analytics data yet. Attempt some quizzes first!
+    </p>
+    <a routerLink="/courses" class="btn btn-primary">
+      Browse Courses
+    </a>
+  </div>
+
+</div>

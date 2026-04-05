@@ -1,0 +1,42 @@
+.quiz-header {
+  background: linear-gradient(135deg, #1F4E79, #2E75B6);
+}
+
+.option-card {
+  border: 2px solid #dee2e6;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #f8f9fa;
+}
+
+.option-card:hover {
+  border-color: #2E75B6;
+  background: #e8f0fe;
+}
+
+.option-card.selected {
+  border-color: #1F4E79;
+  background: #1F4E79;
+  color: white;
+}
+
+.option-label {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  background: #dee2e6;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 28px;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.option-card.selected .option-label {
+  background: white;
+  color: #1F4E79;
+}
+
+.question-btn.active {
+  outline: 3px solid #1F4E79;
+}

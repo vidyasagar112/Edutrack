@@ -1,0 +1,16 @@
+.form-control, .form-select {
+  border-radius: 10px;
+  border: 1px solid #dee2e6;
+  padding: 12px 16px;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #2E75B6;
+  box-shadow: 0 0 0 3px rgba(46,117,182,0.15);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #1F4E79, #2E75B6);
+  border: none;
+  border-radius: 10px;
+}

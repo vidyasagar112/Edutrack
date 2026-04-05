@@ -1,1 +1,70 @@
-<p>quiz-result works!</p>
+<div class="container py-5" *ngIf="result">
+  <div class="result-card card border-0 shadow-lg mx-auto p-5
+              text-center">
+
+    <!-- Result Icon -->
+    <div class="result-icon mb-3">
+      {{ isPassed ? '🏆' : '😔' }}
+    </div>
+
+    <!-- Result Title -->
+    <h2 class="fw-bold mb-2"
+      [class.text-success]="isPassed"
+      [class.text-danger]="!isPassed">
+      {{ isPassed ? 'Congratulations!' : 'Keep Trying!' }}
+    </h2>
+
+    <p class="text-muted mb-4">{{ result.quizTitle }}</p>
+
+    <!-- Score Circle -->
+    <div class="score-circle mx-auto mb-4"
+      [class.passed]="isPassed"
+      [class.failed]="!isPassed">
+      <div class="score-number">{{ scorePercent }}%</div>
+      <div class="score-label">Score</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="row g-3 mb-4">
+      <div class="col-4">
+        <div class="stat-box p-3 rounded-3 bg-light">
+          <h4 class="fw-bold text-primary mb-0">
+            {{ result.score }}
+          </h4>
+          <small class="text-muted">Correct</small>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="stat-box p-3 rounded-3 bg-light">
+          <h4 class="fw-bold text-secondary mb-0">
+            {{ result.totalQuestions }}
+          </h4>
+          <small class="text-muted">Total</small>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="stat-box p-3 rounded-3"
+          [class.bg-success]="isPassed"
+          [class.bg-danger]="!isPassed">
+          <h4 class="fw-bold text-white mb-0">
+            {{ result.result }}
+          </h4>
+          <small class="text-white opacity-75">Result</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="d-flex gap-3 justify-content-center">
+      <a routerLink="/dashboard"
+        class="btn btn-outline-primary btn-lg">
+        🏠 Dashboard
+      </a>
+      <a routerLink="/analytics"
+        class="btn btn-primary btn-lg">
+        📊 View Analytics
+      </a>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,17 @@
+.analytics-banner {
+  background: linear-gradient(135deg, #1F4E79, #2E75B6);
+}
+
+.stat-card {
+  border-radius: 12px;
+  transition: transform 0.3s;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+}
+
+.suggestion-item {
+  background: linear-gradient(135deg, #f0f7ff, #e8f4fd);
+  border-left: 4px solid #2E75B6;
+}
