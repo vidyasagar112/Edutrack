@@ -19,7 +19,9 @@ export class CourseDetailComponent implements OnInit {
   quizzes: any[] = [];
   isLoading = true;
   isStudent = false;
+  isInstructor = false;
   isEnrolling = false;
+  isPublishing = false;
   successMessage = '';
   errorMessage = '';
 
@@ -33,6 +35,7 @@ export class CourseDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.isStudent = this.authService.isStudent();
+    this.isInstructor = this.authService.isInstructor();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadCourse(+id);
@@ -60,6 +63,8 @@ export class CourseDetailComponent implements OnInit {
 
   enroll(): void {
     this.isEnrolling = true;
+    this.errorMessage = '';
+    this.successMessage = '';
     this.enrollmentService.enroll(this.course.id).subscribe({
       next: () => {
         this.isEnrolling = false;
@@ -71,6 +76,41 @@ export class CourseDetailComponent implements OnInit {
           err.error?.message || 'Enrollment failed!';
       }
     });
+  }
+
+  togglePublish(): void {
+    this.isPublishing = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    const updated = {
+      title       : this.course.title,
+      description : this.course.description,
+      subject     : this.course.subject,
+      thumbnailUrl: this.course.thumbnailUrl,
+      published   : !this.course.published
+    };
+
+    this.courseService.updateCourse(
+      this.course.id, updated).subscribe({
+      next: (res) => {
+        this.isPublishing = false;
+        this.course.published = !this.course.published;
+        this.successMessage = this.course.published
+          ? 'Course published successfully!'
+          : 'Course unpublished!';
+        setTimeout(() => this.successMessage = '', 3000);
+      },
+      error: () => {
+        this.isPublishing = false;
+        this.errorMessage = 'Failed to update course!';
+      }
+    });
+  }
+
+  isOwner(): boolean {
+    const user = this.authService.getCurrentUser();
+    return this.course?.instructorEmail === user?.email;
   }
 
   getDifficultyColor(difficulty: string): string {

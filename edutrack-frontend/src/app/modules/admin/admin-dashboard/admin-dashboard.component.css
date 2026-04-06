@@ -1,0 +1,47 @@
+.admin-banner {
+  background: linear-gradient(135deg, #7c0a02, #b5231a);
+}
+
+.stat-card {
+  border-radius: 12px;
+  transition: transform 0.3s;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+}
+
+.stat-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.user-item {
+  background: #f8f9fa;
+  transition: background 0.2s;
+}
+
+.user-item:hover {
+  background: #e8f0fe;
+}
+
+.nav-tabs .nav-link {
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.nav-tabs .nav-link.active {
+  color: #1F4E79;
+  font-weight: 700;
+  border-bottom: 3px solid #1F4E79;
+}
+
+.form-control, .form-select {
+  border-radius: 10px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #1F4E79, #2E75B6);
+  border: none;
+  border-radius: 10px;
+}

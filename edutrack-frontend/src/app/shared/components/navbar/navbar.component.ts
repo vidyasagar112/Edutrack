@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
-import { Router, RouterLink, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -16,6 +15,7 @@ export class NavbarComponent implements OnInit {
   isLoggedIn = false;
   isStudent = false;
   isInstructor = false;
+  isAdmin = false;
   fullName = '';
 
   constructor(
@@ -29,6 +29,7 @@ export class NavbarComponent implements OnInit {
       this.fullName = user?.fullName || '';
       this.isStudent = this.authService.isStudent();
       this.isInstructor = this.authService.isInstructor();
+      this.isAdmin = this.authService.isAdmin();
     });
   }
 

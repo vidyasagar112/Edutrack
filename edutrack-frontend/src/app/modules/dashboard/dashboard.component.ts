@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { EnrollmentService } from '../../core/services/enrollment.service';
 import { QuizService } from '../../core/services/quiz.service';
@@ -19,11 +19,11 @@ export class DashboardComponent implements OnInit {
   fullName = '';
   isStudent = false;
   isInstructor = false;
+  isAdmin = false;
 
   // student data
   enrollments: any[] = [];
   recentAttempts: any[] = [];
-  progressData: any = null;
 
   // instructor data
   myCourses: any[] = [];
@@ -41,7 +41,8 @@ export class DashboardComponent implements OnInit {
     private enrollmentService: EnrollmentService,
     private quizService: QuizService,
     private progressService: ProgressService,
-    private courseService: CourseService
+    private courseService: CourseService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -49,8 +50,11 @@ export class DashboardComponent implements OnInit {
     this.fullName = user?.fullName || '';
     this.isStudent = this.authService.isStudent();
     this.isInstructor = this.authService.isInstructor();
+    this.isAdmin = this.authService.isAdmin();
 
-    if (this.isStudent) {
+    if (this.isAdmin) {
+      this.router.navigate(['/admin']);
+    } else if (this.isStudent) {
       this.loadStudentData();
     } else if (this.isInstructor) {
       this.loadInstructorData();
@@ -58,7 +62,6 @@ export class DashboardComponent implements OnInit {
   }
 
   loadStudentData(): void {
-    // load enrollments
     this.enrollmentService.getMyEnrollments().subscribe({
       next: (res) => {
         this.enrollments = res.data || [];
@@ -68,7 +71,6 @@ export class DashboardComponent implements OnInit {
       }
     });
 
-    // load quiz attempts
     this.quizService.getMyAttempts().subscribe({
       next: (res) => {
         this.recentAttempts = (res.data || []).slice(0, 5);
@@ -76,7 +78,8 @@ export class DashboardComponent implements OnInit {
         if (res.data?.length > 0) {
           const total = res.data.reduce(
             (sum: number, a: any) => sum + a.percentage, 0);
-          this.averageScore = Math.round(total / res.data.length);
+          this.averageScore = Math.round(
+            total / res.data.length);
         }
         this.isLoading = false;
       },
@@ -94,17 +97,18 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  getTotalStudents(): number {
+    return this.myCourses.reduce(
+      (sum, c) => sum + (c.enrollmentCount || 0), 0);
+  }
+
+  getPublishedCount(): number {
+    return this.myCourses.filter(c => c.published).length;
+  }
+
   getProgressColor(percent: number): string {
     if (percent >= 75) return 'bg-success';
     if (percent >= 50) return 'bg-warning';
     return 'bg-danger';
   }
-  getTotalStudents(): number {
-  return this.myCourses.reduce(
-    (sum, c) => sum + (c.enrollmentCount || 0), 0);
-}
-
-getPublishedCount(): number {
-  return this.myCourses.filter(c => c.published).length;
-}
 }

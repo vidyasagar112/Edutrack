@@ -94,6 +94,13 @@ export const routes: Routes = [
       import('./modules/progress/progress.component')
         .then(m => m.ProgressComponent)
   },
+  {
+  path: 'admin',
+  canActivate: [authGuard],
+  loadComponent: () =>
+    import('./modules/admin/admin-dashboard/admin-dashboard.component')
+      .then(m => m.AdminDashboardComponent)
+},
 
   // fallback
   { path: '**', redirectTo: '/home' }

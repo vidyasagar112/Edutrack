@@ -1,4 +1,5 @@
-<nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #1F4E79, #2E75B6);">
+<nav class="navbar navbar-expand-lg navbar-dark"
+  style="background: linear-gradient(135deg, #1F4E79, #2E75B6);">
   <div class="container">
 
     <!-- Logo -->
@@ -8,7 +9,8 @@
 
     <!-- Toggle for mobile -->
     <button class="navbar-toggler" type="button"
-      data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -16,57 +18,122 @@
 
       <!-- Left Links -->
       <ul class="navbar-nav me-auto">
+
         <li class="nav-item">
-          <a class="nav-link" routerLink="/home">Home</a>
-        </li>
+  <a class="nav-link"
+    [routerLink]="isLoggedIn ? 
+      (isAdmin ? '/admin' : '/dashboard') : '/home'">
+    Home
+  </a>
+</li>
         <li class="nav-item">
           <a class="nav-link" routerLink="/courses">Courses</a>
         </li>
-        <li class="nav-item" *ngIf="isLoggedIn && isStudent">
-          <a class="nav-link" routerLink="/dashboard">Dashboard</a>
+
+        <!-- Student Links -->
+        <li class="nav-item"
+          *ngIf="isLoggedIn && isStudent">
+          <a class="nav-link" routerLink="/dashboard">
+            Dashboard
+          </a>
         </li>
-        <li class="nav-item" *ngIf="isLoggedIn && isStudent">
-          <a class="nav-link" routerLink="/analytics">Analytics</a>
+        <li class="nav-item"
+          *ngIf="isLoggedIn && isStudent">
+          <a class="nav-link" routerLink="/analytics">
+            Analytics
+          </a>
         </li>
-        <li class="nav-item" *ngIf="isLoggedIn && isStudent">
-          <a class="nav-link" routerLink="/progress">Progress</a>
+        <li class="nav-item"
+          *ngIf="isLoggedIn && isStudent">
+          <a class="nav-link" routerLink="/progress">
+            Progress
+          </a>
         </li>
-        <li class="nav-item" *ngIf="isLoggedIn && isInstructor">
-          <a class="nav-link" routerLink="/dashboard">My Courses</a>
+
+        <!-- Instructor Links -->
+        <li class="nav-item"
+          *ngIf="isLoggedIn && isInstructor">
+          <a class="nav-link" routerLink="/dashboard">
+            My Courses
+          </a>
         </li>
+
+        <!-- Admin Links -->
+        <li class="nav-item"
+          *ngIf="isLoggedIn && isAdmin">
+          <a class="nav-link" routerLink="/admin">
+            🛡️ Admin Panel
+          </a>
+        </li>
+
       </ul>
 
       <!-- Right Links -->
       <ul class="navbar-nav">
+
+        <!-- Not Logged In -->
         <li class="nav-item" *ngIf="!isLoggedIn">
           <a class="nav-link" routerLink="/login">Login</a>
         </li>
         <li class="nav-item" *ngIf="!isLoggedIn">
-          <a class="nav-link btn btn-light text-primary px-3 ms-2"
-             routerLink="/register">
+          <a class="nav-link btn btn-light text-primary
+                    px-3 ms-2"
+            routerLink="/register">
             Register
           </a>
         </li>
+
+        <!-- Logged In — User Dropdown -->
         <li class="nav-item dropdown" *ngIf="isLoggedIn">
           <a class="nav-link dropdown-toggle" href="#"
-             data-bs-toggle="dropdown">
+            data-bs-toggle="dropdown">
             👤 {{ fullName }}
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li>
-              <a class="dropdown-item" routerLink="/dashboard">
-                Dashboard
+
+            <li *ngIf="isStudent">
+              <a class="dropdown-item"
+                routerLink="/dashboard">
+                📊 Dashboard
               </a>
             </li>
+            <li *ngIf="isStudent">
+              <a class="dropdown-item"
+                routerLink="/analytics">
+                📈 Analytics
+              </a>
+            </li>
+            <li *ngIf="isStudent">
+              <a class="dropdown-item"
+                routerLink="/progress">
+                📚 Progress
+              </a>
+            </li>
+            <li *ngIf="isInstructor">
+              <a class="dropdown-item"
+                routerLink="/dashboard">
+                📚 My Courses
+              </a>
+            </li>
+            <li *ngIf="isAdmin">
+              <a class="dropdown-item"
+                routerLink="/admin">
+                🛡️ Admin Panel
+              </a>
+            </li>
+
             <li><hr class="dropdown-divider"></li>
+
             <li>
               <button class="dropdown-item text-danger"
                 (click)="logout()">
-                Logout
+                🚪 Logout
               </button>
             </li>
+
           </ul>
         </li>
+
       </ul>
 
     </div>
