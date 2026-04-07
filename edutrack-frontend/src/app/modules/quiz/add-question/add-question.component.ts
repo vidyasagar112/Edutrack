@@ -7,7 +7,7 @@ import { QuizService } from '../../../core/services/quiz.service';
 @Component({
   selector: 'app-add-question',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './add-question.component.html',
   styleUrl: './add-question.component.css'
 })
