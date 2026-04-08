@@ -26,6 +26,8 @@ public class EnrollmentService {
     @Autowired private UserRepository       userRepository;
     @Autowired private CourseRepository     courseRepository;
     @Autowired private EmailService         emailService;
+    
+    
 
     public EnrollmentResponse enroll(EnrollmentRequest request,
                                       String studentEmail) {
@@ -147,7 +149,7 @@ public class EnrollmentService {
     }
 
     private EnrollmentResponse mapToResponse(Enrollment enrollment) {
-        return new EnrollmentResponse(
+        EnrollmentResponse res = new EnrollmentResponse(
                 enrollment.getId(),
                 enrollment.getCourse().getId(),
                 enrollment.getCourse().getTitle(),
@@ -159,5 +161,8 @@ public class EnrollmentService {
                 enrollment.getProgressPercent(),
                 enrollment.getEnrolledAt()
         );
+        res.setStudentId(enrollment.getStudent().getId()); // ADD THIS
+        return res;
     }
+    
 }

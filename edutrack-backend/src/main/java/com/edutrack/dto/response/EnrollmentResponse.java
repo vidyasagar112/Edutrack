@@ -9,6 +9,7 @@ public class EnrollmentResponse {
     private String courseTitle;
     private String courseSubject;
     private String instructorName;
+    private Long studentId;        // ← ADD THIS
     private String studentName;
     private String studentEmail;
     private String status;
@@ -17,10 +18,14 @@ public class EnrollmentResponse {
 
     public EnrollmentResponse() {}
 
-    public EnrollmentResponse(Long id, Long courseId, String courseTitle,
-                               String courseSubject, String instructorName,
-                               String studentName, String studentEmail,
-                               String status, int progressPercent,
+    public EnrollmentResponse(Long id, Long courseId,
+                               String courseTitle,
+                               String courseSubject,
+                               String instructorName,
+                               String studentName,
+                               String studentEmail,
+                               String status,
+                               int progressPercent,
                                LocalDateTime enrolledAt) {
         this.id = id;
         this.courseId = courseId;
@@ -49,6 +54,9 @@ public class EnrollmentResponse {
 
     public String getInstructorName() { return instructorName; }
     public void setInstructorName(String instructorName) { this.instructorName = instructorName; }
+
+    public Long getStudentId() { return studentId; }           // ← ADD THIS
+    public void setStudentId(Long studentId) { this.studentId = studentId; } // ← ADD THIS
 
     public String getStudentName() { return studentName; }
     public void setStudentName(String studentName) { this.studentName = studentName; }

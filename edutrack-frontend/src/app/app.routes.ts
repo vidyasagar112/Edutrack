@@ -101,6 +101,27 @@ export const routes: Routes = [
     import('./modules/admin/admin-dashboard/admin-dashboard.component')
       .then(m => m.AdminDashboardComponent)
 },
+{
+  path: 'profile',
+  canActivate: [authGuard],
+  loadComponent: () =>
+    import('./modules/profile/my-profile/my-profile.component')
+      .then(m => m.MyProfileComponent)
+},
+{
+  path: 'profile/view/:id',
+  canActivate: [authGuard],
+  loadComponent: () =>
+    import('./modules/profile/view-profile/view-profile.component')
+      .then(m => m.ViewProfileComponent)
+},
+{
+  path: 'courses/:courseId/students',
+  canActivate: [authGuard],
+  loadComponent: () =>
+    import('./modules/courses/course-students/course-students.component')
+      .then(m => m.CourseStudentsComponent)
+},
 
   // fallback
   { path: '**', redirectTo: '/home' }

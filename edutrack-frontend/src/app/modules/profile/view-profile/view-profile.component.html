@@ -1,0 +1,143 @@
+<div class="container py-4">
+
+  <!-- Back Button -->
+  <div class="mb-3">
+    <button class="btn btn-outline-secondary"
+      onclick="history.back()">
+      ← Back
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div class="text-center py-5" *ngIf="isLoading">
+    <div class="spinner-border text-primary"
+      style="width:3rem;height:3rem;"></div>
+    <p class="mt-3 text-muted">Loading profile...</p>
+  </div>
+
+  <div *ngIf="!isLoading && profile">
+
+    <!-- Header -->
+    <div class="profile-banner p-4 mb-4 text-white rounded-3">
+      <div class="d-flex align-items-center gap-4">
+        <div class="avatar-circle">
+          {{ profile.fullName?.charAt(0)?.toUpperCase() }}
+        </div>
+        <div>
+          <h3 class="fw-bold mb-1">{{ profile.fullName }}</h3>
+          <p class="mb-1 opacity-75">{{ profile.email }}</p>
+          <span class="badge bg-warning text-dark">
+            PRN: {{ profile.prnNumber || 'Not set' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Details -->
+    <div class="row g-4">
+
+      <!-- Personal Info -->
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm p-4">
+          <h5 class="fw-bold mb-4" style="color:#1F4E79;">
+            👤 Personal Information
+          </h5>
+          <table class="table table-borderless">
+            <tbody>
+              <tr>
+                <td class="text-muted fw-semibold">First Name</td>
+                <td>{{ profile.firstName || '—' }}</td>
+              </tr>
+              <tr>
+                <td class="text-muted fw-semibold">Middle Name</td>
+                <td>{{ profile.middleName || '—' }}</td>
+              </tr>
+              <tr>
+                <td class="text-muted fw-semibold">Last Name</td>
+                <td>{{ profile.lastName || '—' }}</td>
+              </tr>
+              <tr>
+                <td class="text-muted fw-semibold">Mother's Name</td>
+                <td>{{ profile.mothersName || '—' }}</td>
+              </tr>
+              <tr>
+                <td class="text-muted fw-semibold">Date of Birth</td>
+                <td>{{ profile.dateOfBirth || '—' }}</td>
+              </tr>
+              <tr>
+                <td class="text-muted fw-semibold">Phone</td>
+                <td>{{ profile.phoneNumber || '—' }}</td>
+              </tr>
+              <tr>
+                <td class="text-muted fw-semibold">Address</td>
+                <td>{{ profile.address || '—' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Academic Info -->
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm p-4">
+          <h5 class="fw-bold mb-4" style="color:#1F4E79;">
+            🎓 Academic Information
+          </h5>
+          <table class="table table-borderless">
+            <tbody>
+              <tr>
+                <td class="text-muted fw-semibold">PRN Number</td>
+                <td>
+                  <span class="badge bg-primary">
+                    {{ profile.prnNumber || 'Not set' }}
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-muted fw-semibold">Email</td>
+                <td>{{ profile.email }}</td>
+              </tr>
+              <tr>
+                <td class="text-muted fw-semibold">Role</td>
+                <td>
+                  <span class="badge bg-success">
+                    {{ profile.roles?.join(', ') }}
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-muted fw-semibold">Category</td>
+                <td>{{ profile.category || '—' }}</td>
+              </tr>
+              <tr>
+                <td class="text-muted fw-semibold">Caste</td>
+                <td>{{ profile.caste || '—' }}</td>
+              </tr>
+              <tr>
+                <td class="text-muted fw-semibold">
+                  Father's Income
+                </td>
+                <td>
+                  {{ profile.fatherAnnualIncome
+                    ? '₹' + profile.fatherAnnualIncome
+                    : '—' }}
+                </td>
+              </tr>
+              <tr>
+                <td class="text-muted fw-semibold">Status</td>
+                <td>
+                  <span class="badge"
+                    [class.bg-success]="profile.enabled"
+                    [class.bg-danger]="!profile.enabled">
+                    {{ profile.enabled ? 'Active' : 'Disabled' }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

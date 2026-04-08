@@ -297,15 +297,19 @@
                   </span>
                 </td>
                 <td>
-                  <a [routerLink]="['/courses', course.id]"
-                    class="btn btn-sm btn-outline-primary me-1">
-                    View
-                  </a>
-                  <a [routerLink]="['/quiz/create', course.id]"
-                    class="btn btn-sm btn-outline-success">
-                    + Quiz
-                  </a>
-                </td>
+  <a [routerLink]="['/courses', course.id]"
+    class="btn btn-sm btn-outline-primary me-1">
+    View
+  </a>
+  <a [routerLink]="['/courses', course.id, 'students']"
+    class="btn btn-sm btn-outline-success me-1">
+    👥 Students
+  </a>
+  <a [routerLink]="['/quiz/create', course.id]"
+    class="btn btn-sm btn-outline-warning">
+    + Quiz
+  </a>
+</td>
               </tr>
             </tbody>
           </table>

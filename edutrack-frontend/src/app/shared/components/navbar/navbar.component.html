@@ -97,6 +97,12 @@
                 📊 Dashboard
               </a>
             </li>
+            <!-- Add inside the logged in dropdown BEFORE logout -->
+<li *ngIf="isStudent || isInstructor">
+  <a class="dropdown-item" routerLink="/profile">
+    👤 My Profile
+  </a>
+</li>
             <li *ngIf="isStudent">
               <a class="dropdown-item"
                 routerLink="/analytics">

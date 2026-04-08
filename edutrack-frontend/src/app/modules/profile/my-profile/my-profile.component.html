@@ -1,0 +1,285 @@
+<div class="container py-4">
+
+  <!-- Header -->
+  <div class="profile-banner p-4 mb-4 text-white rounded-3">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h3 class="fw-bold mb-1">👤 My Profile</h3>
+        <p class="mb-0 opacity-75">Manage your personal information</p>
+      </div>
+      <div *ngIf="profile">
+        <span *ngIf="isProfileComplete()"
+          class="badge bg-success fs-6">
+          ✅ Profile Complete
+        </span>
+        <span *ngIf="!isProfileComplete()"
+          class="badge bg-warning text-dark fs-6">
+          ⚠️ Profile Incomplete
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="text-center py-5" *ngIf="isLoading">
+    <div class="spinner-border text-primary"
+      style="width:3rem;height:3rem;"></div>
+    <p class="mt-3 text-muted">Loading profile...</p>
+  </div>
+
+  <div *ngIf="!isLoading && profile">
+
+    <!-- Messages -->
+    <div class="alert alert-success" *ngIf="successMessage">
+      ✅ {{ successMessage }}
+    </div>
+    <div class="alert alert-danger" *ngIf="errorMessage">
+      ❌ {{ errorMessage }}
+    </div>
+
+    <div class="row g-4">
+
+      <!-- Profile Card -->
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm text-center p-4">
+          <div class="avatar-circle mx-auto mb-3">
+            {{ profile.fullName?.charAt(0)?.toUpperCase() }}
+          </div>
+          <h5 class="fw-bold mb-1">{{ profile.fullName }}</h5>
+          <p class="text-muted small mb-2">{{ profile.email }}</p>
+          <span class="badge bg-primary mb-3">
+            {{ profile.roles?.join(', ') }}
+          </span>
+          <div class="text-start">
+            <p class="small mb-1">
+              <span class="text-muted">PRN: </span>
+              <strong>{{ profile.prnNumber || 'Not set' }}</strong>
+            </p>
+            <p class="small mb-1">
+              <span class="text-muted">Phone: </span>
+              <strong>{{ profile.phoneNumber || 'Not set' }}</strong>
+            </p>
+            <p class="small mb-0">
+              <span class="text-muted">Category: </span>
+              <strong>{{ profile.category || 'Not set' }}</strong>
+            </p>
+          </div>
+          <button class="btn btn-primary mt-3 w-100"
+            (click)="isEditing = !isEditing">
+            {{ isEditing ? '❌ Cancel' : '✏️ Edit Profile' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Profile Details / Edit Form -->
+      <div class="col-md-8">
+        <div class="card border-0 shadow-sm p-4">
+
+          <!-- VIEW MODE -->
+          <div *ngIf="!isEditing">
+            <h5 class="fw-bold mb-4" style="color:#1F4E79;">
+              📋 Personal Information
+            </h5>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="text-muted small">First Name</label>
+                <p class="fw-semibold">
+                  {{ profile.firstName || '—' }}
+                </p>
+              </div>
+              <div class="col-md-4">
+                <label class="text-muted small">Middle Name</label>
+                <p class="fw-semibold">
+                  {{ profile.middleName || '—' }}
+                </p>
+              </div>
+              <div class="col-md-4">
+                <label class="text-muted small">Last Name</label>
+                <p class="fw-semibold">
+                  {{ profile.lastName || '—' }}
+                </p>
+              </div>
+              <div class="col-md-6">
+                <label class="text-muted small">PRN Number</label>
+                <p class="fw-semibold">
+                  {{ profile.prnNumber || '—' }}
+                </p>
+              </div>
+              <div class="col-md-6">
+                <label class="text-muted small">Date of Birth</label>
+                <p class="fw-semibold">
+                  {{ profile.dateOfBirth || '—' }}
+                </p>
+              </div>
+              <div class="col-md-6">
+                <label class="text-muted small">
+                  Mother's Name
+                </label>
+                <p class="fw-semibold">
+                  {{ profile.mothersName || '—' }}
+                </p>
+              </div>
+              <div class="col-md-6">
+                <label class="text-muted small">Phone</label>
+                <p class="fw-semibold">
+                  {{ profile.phoneNumber || '—' }}
+                </p>
+              </div>
+              <div class="col-md-4">
+                <label class="text-muted small">Category</label>
+                <p class="fw-semibold">
+                  {{ profile.category || '—' }}
+                </p>
+              </div>
+              <div class="col-md-4">
+                <label class="text-muted small">Caste</label>
+                <p class="fw-semibold">
+                  {{ profile.caste || '—' }}
+                </p>
+              </div>
+              <div class="col-md-4">
+                <label class="text-muted small">
+                  Father's Annual Income
+                </label>
+                <p class="fw-semibold">
+                  {{ profile.fatherAnnualIncome
+                    ? '₹' + profile.fatherAnnualIncome
+                    : '—' }}
+                </p>
+              </div>
+              <div class="col-12">
+                <label class="text-muted small">Address</label>
+                <p class="fw-semibold">
+                  {{ profile.address || '—' }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- EDIT MODE -->
+          <div *ngIf="isEditing">
+            <h5 class="fw-bold mb-4" style="color:#1F4E79;">
+              ✏️ Edit Profile
+            </h5>
+            <div class="row g-3">
+
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">
+                  First Name
+                </label>
+                <input type="text" class="form-control"
+                  [(ngModel)]="firstName"
+                  placeholder="First name" />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">
+                  Middle Name
+                </label>
+                <input type="text" class="form-control"
+                  [(ngModel)]="middleName"
+                  placeholder="Middle name" />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">
+                  Last Name
+                </label>
+                <input type="text" class="form-control"
+                  [(ngModel)]="lastName"
+                  placeholder="Last name" />
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">
+                  PRN Number <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control"
+                  [(ngModel)]="prnNumber"
+                  placeholder="Unique PRN number" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">
+                  Date of Birth
+                </label>
+                <input type="date" class="form-control"
+                  [(ngModel)]="dateOfBirth" />
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">
+                  Mother's Name
+                </label>
+                <input type="text" class="form-control"
+                  [(ngModel)]="mothersName"
+                  placeholder="Mother's full name" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">
+                  Phone Number
+                </label>
+                <input type="tel" class="form-control"
+                  [(ngModel)]="phoneNumber"
+                  placeholder="10 digit mobile number" />
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">
+                  Category
+                </label>
+                <select class="form-select"
+                  [(ngModel)]="category">
+                  <option value="">Select category</option>
+                  <option *ngFor="let cat of categories"
+                    [value]="cat">{{ cat }}</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">
+                  Caste
+                </label>
+                <input type="text" class="form-control"
+                  [(ngModel)]="caste"
+                  placeholder="Caste name" />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">
+                  Father's Annual Income (₹)
+                </label>
+                <input type="number" class="form-control"
+                  [(ngModel)]="fatherAnnualIncome"
+                  placeholder="e.g. 250000" />
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-semibold small">
+                  Address
+                </label>
+                <textarea class="form-control" rows="3"
+                  [(ngModel)]="address"
+                  placeholder="Full residential address...">
+                </textarea>
+              </div>
+
+              <div class="col-12">
+                <button
+                  class="btn btn-primary btn-lg fw-bold me-3"
+                  (click)="saveProfile()"
+                  [disabled]="isSaving">
+                  <span *ngIf="isSaving"
+                    class="spinner-border spinner-border-sm me-2">
+                  </span>
+                  {{ isSaving ? 'Saving...' : '💾 Save Profile' }}
+                </button>
+                <button class="btn btn-outline-secondary btn-lg"
+                  (click)="isEditing = false">
+                  Cancel
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
