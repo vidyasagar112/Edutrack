@@ -194,7 +194,14 @@
                 </label>
                 <input type="text" class="form-control"
                   [(ngModel)]="prnNumber"
-                  placeholder="Unique PRN number" />
+                  placeholder="14-digit PRN number (cannot start with 0)"
+                  pattern="^[1-9]\d{13}$"
+                  maxlength="14"
+                  minlength="14"
+                  title="PRN must be exactly 14 digits and cannot start with 0" />
+                <div class="form-text text-muted small">
+                  Must be exactly 14 digits and cannot start with 0
+                </div>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-semibold small">

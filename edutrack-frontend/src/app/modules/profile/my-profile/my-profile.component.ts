@@ -75,6 +75,30 @@ export class MyProfileComponent implements OnInit {
     this.successMessage = '';
     this.errorMessage = '';
 
+    // PRN Number Validation
+    if (this.prnNumber) {
+      // Check if PRN contains only digits
+      if (!/^\d+$/.test(this.prnNumber)) {
+        this.isSaving = false;
+        this.errorMessage = 'PRN Number must contain only digits!';
+        return;
+      }
+
+      // Check if PRN is exactly 14 digits
+      if (this.prnNumber.length !== 14) {
+        this.isSaving = false;
+        this.errorMessage = 'PRN Number must be exactly 14 digits!';
+        return;
+      }
+
+      // Check if PRN doesn't start with 0
+      if (this.prnNumber.startsWith('0')) {
+        this.isSaving = false;
+        this.errorMessage = 'PRN Number cannot start with 0!';
+        return;
+      }
+    }
+
     this.profileService.updateProfile({
       firstName: this.firstName,
       middleName: this.middleName,

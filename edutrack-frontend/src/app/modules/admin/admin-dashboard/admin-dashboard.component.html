@@ -46,22 +46,30 @@
   <!-- Main Tabs -->
   <ul class="nav nav-tabs mb-4">
     <li class="nav-item">
-      <button class="nav-link" [class.active]="activeTab==='overview'" (click)="setTab('overview')">
+      <button class="nav-link"
+        [class.active]="activeTab==='overview'"
+        (click)="setTab('overview')">
         📊 Overview
       </button>
     </li>
     <li class="nav-item">
-      <button class="nav-link" [class.active]="activeTab==='users'" (click)="setTab('users')">
+      <button class="nav-link"
+        [class.active]="activeTab==='users'"
+        (click)="setTab('users')">
         👥 Users
       </button>
     </li>
     <li class="nav-item">
-      <button class="nav-link" [class.active]="activeTab==='courses'" (click)="setTab('courses')">
+      <button class="nav-link"
+        [class.active]="activeTab==='courses'"
+        (click)="setTab('courses')">
         📚 Courses
       </button>
     </li>
     <li class="nav-item">
-      <button class="nav-link" [class.active]="activeTab==='email'" (click)="setTab('email')">
+      <button class="nav-link"
+        [class.active]="activeTab==='email'"
+        (click)="setTab('email')">
         📧 Send Email
       </button>
     </li>
@@ -69,7 +77,9 @@
 
   <!-- Loading -->
   <div class="text-center py-5" *ngIf="isLoading">
-    <div class="spinner-border text-primary" style="width:3rem;height:3rem;"></div>
+    <div class="spinner-border text-primary"
+      style="width:3rem;height:3rem;">
+    </div>
     <p class="mt-3 text-muted">Loading admin data...</p>
   </div>
 
@@ -79,16 +89,26 @@
       <div class="col-md-6">
         <div class="card border-0 shadow-sm">
           <div class="card-header bg-white border-0 pt-3">
-            <h5 class="fw-bold mb-0" style="color:#1F4E79;">👥 Recent Users</h5>
+            <h5 class="fw-bold mb-0" style="color:#1F4E79;">
+              👥 Recent Users
+            </h5>
           </div>
           <div class="card-body">
             <div *ngFor="let user of users.slice(0,5)"
-              class="user-item d-flex justify-content-between align-items-center mb-3 p-2 rounded-3">
+              class="user-item d-flex justify-content-between
+                     align-items-center mb-3 p-2 rounded-3">
               <div>
-                <p class="fw-semibold mb-0 small">{{ user.fullName }}</p>
+                <a [routerLink]="['/profile/view', user.id]"
+                  class="fw-semibold small text-dark
+                         text-decoration-none">
+                  {{ user.fullName }}
+                  <small class="text-primary">→</small>
+                </a>
+                <br>
                 <small class="text-muted">{{ user.email }}</small>
               </div>
-              <span class="badge" [ngClass]="getRoleBadgeColor(user)">
+              <span class="badge"
+                [ngClass]="getRoleBadgeColor(user)">
                 {{ getUserRole(user) }}
               </span>
             </div>
@@ -98,16 +118,26 @@
       <div class="col-md-6">
         <div class="card border-0 shadow-sm">
           <div class="card-header bg-white border-0 pt-3">
-            <h5 class="fw-bold mb-0" style="color:#1F4E79;">📚 Recent Courses</h5>
+            <h5 class="fw-bold mb-0" style="color:#1F4E79;">
+              📚 Recent Courses
+            </h5>
           </div>
           <div class="card-body">
             <div *ngFor="let course of courses.slice(0,5)"
-              class="user-item d-flex justify-content-between align-items-center mb-3 p-2 rounded-3">
+              class="user-item d-flex justify-content-between
+                     align-items-center mb-3 p-2 rounded-3">
               <div>
-                <p class="fw-semibold mb-0 small">{{ course.title }}</p>
-                <small class="text-muted">{{ course.subject }} • 👥 {{ course.enrollmentCount }} students</small>
+                <p class="fw-semibold mb-0 small">
+                  {{ course.title }}
+                </p>
+                <small class="text-muted">
+                  {{ course.subject }} •
+                  👥 {{ course.enrollmentCount }} students
+                </small>
               </div>
-              <span class="badge" [class.bg-success]="course.published" [class.bg-secondary]="!course.published">
+              <span class="badge"
+                [class.bg-success]="course.published"
+                [class.bg-secondary]="!course.published">
                 {{ course.published ? 'Published' : 'Draft' }}
               </span>
             </div>
@@ -121,8 +151,14 @@
   <div *ngIf="!isLoading && activeTab==='users'">
 
     <!-- Delete Messages -->
-    <div class="alert alert-success mb-3" *ngIf="deleteSuccess">✅ {{ deleteSuccess }}</div>
-    <div class="alert alert-danger mb-3" *ngIf="deleteError">❌ {{ deleteError }}</div>
+    <div class="alert alert-success mb-3"
+      *ngIf="deleteSuccess">
+      ✅ {{ deleteSuccess }}
+    </div>
+    <div class="alert alert-danger mb-3"
+      *ngIf="deleteError">
+      ❌ {{ deleteError }}
+    </div>
 
     <!-- User Sub Tabs -->
     <div class="d-flex gap-2 mb-4">
@@ -146,43 +182,73 @@
       </button>
     </div>
 
-    <!-- Students List -->
-    <div class="card border-0 shadow-sm" *ngIf="activeUserTab==='students'">
+    <!-- ── Students List ── -->
+    <div class="card border-0 shadow-sm"
+      *ngIf="activeUserTab==='students'">
       <div class="card-header bg-white border-0 pt-3">
-        <h5 class="fw-bold mb-0" style="color:#1F4E79;">🎓 Students</h5>
+        <h5 class="fw-bold mb-0" style="color:#1F4E79;">
+          🎓 Students
+        </h5>
       </div>
       <div class="card-body">
         <div class="table-responsive">
           <table class="table table-hover align-middle">
             <thead class="table-light">
-              <tr><th>#</th><th>Name</th><th>Email</th><th>Status</th><th>Actions</th></tr>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
             </thead>
             <tbody>
               <tr *ngFor="let user of students; let i=index">
                 <td class="text-muted">{{ i+1 }}</td>
-                <td class="fw-semibold">{{ user.fullName }}</td>
-                <td class="text-muted small">{{ user.email }}</td>
                 <td>
-                  <span class="badge" [class.bg-success]="user.enabled" [class.bg-danger]="!user.enabled">
+                  <a [routerLink]="['/profile/view', user.id]"
+                    class="fw-semibold text-dark
+                           text-decoration-none">
+                    {{ user.fullName }}
+                    <small class="text-primary ms-1">→</small>
+                  </a>
+                </td>
+                <td class="text-muted small">
+                  {{ user.email }}
+                </td>
+                <td>
+                  <span class="badge"
+                    [class.bg-success]="user.enabled"
+                    [class.bg-danger]="!user.enabled">
                     {{ user.enabled ? 'Active' : 'Disabled' }}
                   </span>
                 </td>
                 <td>
                   <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-outline-primary" (click)="selectUserForEmail(user.id)">
+                    <button
+                      class="btn btn-sm btn-outline-primary"
+                      (click)="selectUserForEmail(user.id)">
                       📧 Email
                     </button>
-                    <button class="btn btn-sm btn-outline-danger"
-                      (click)="deleteUser(user.id, user.fullName)"
+                    <button
+                      class="btn btn-sm btn-outline-danger"
+                      (click)="deleteUser(
+                        user.id, user.fullName)"
                       [disabled]="isDeletingId === user.id">
-                      <span *ngIf="isDeletingId===user.id" class="spinner-border spinner-border-sm me-1"></span>
+                      <span *ngIf="isDeletingId===user.id"
+                        class="spinner-border
+                               spinner-border-sm me-1">
+                      </span>
                       🗑️ Delete
                     </button>
                   </div>
                 </td>
               </tr>
               <tr *ngIf="students.length===0">
-                <td colspan="5" class="text-center text-muted py-3">No students found</td>
+                <td colspan="5"
+                  class="text-center text-muted py-3">
+                  No students found
+                </td>
               </tr>
             </tbody>
           </table>
@@ -190,43 +256,74 @@
       </div>
     </div>
 
-    <!-- Instructors List -->
-    <div class="card border-0 shadow-sm" *ngIf="activeUserTab==='instructors'">
+    <!-- ── Instructors List ── -->
+    <div class="card border-0 shadow-sm"
+      *ngIf="activeUserTab==='instructors'">
       <div class="card-header bg-white border-0 pt-3">
-        <h5 class="fw-bold mb-0" style="color:#1F4E79;">👨‍🏫 Instructors</h5>
+        <h5 class="fw-bold mb-0" style="color:#1F4E79;">
+          👨‍🏫 Instructors
+        </h5>
       </div>
       <div class="card-body">
         <div class="table-responsive">
           <table class="table table-hover align-middle">
             <thead class="table-light">
-              <tr><th>#</th><th>Name</th><th>Email</th><th>Status</th><th>Actions</th></tr>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let user of instructors; let i=index">
+              <tr *ngFor="let user of instructors;
+                          let i=index">
                 <td class="text-muted">{{ i+1 }}</td>
-                <td class="fw-semibold">{{ user.fullName }}</td>
-                <td class="text-muted small">{{ user.email }}</td>
                 <td>
-                  <span class="badge" [class.bg-success]="user.enabled" [class.bg-danger]="!user.enabled">
+                  <a [routerLink]="['/profile/view', user.id]"
+                    class="fw-semibold text-dark
+                           text-decoration-none">
+                    {{ user.fullName }}
+                    <small class="text-primary ms-1">→</small>
+                  </a>
+                </td>
+                <td class="text-muted small">
+                  {{ user.email }}
+                </td>
+                <td>
+                  <span class="badge"
+                    [class.bg-success]="user.enabled"
+                    [class.bg-danger]="!user.enabled">
                     {{ user.enabled ? 'Active' : 'Disabled' }}
                   </span>
                 </td>
                 <td>
                   <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-outline-primary" (click)="selectUserForEmail(user.id)">
+                    <button
+                      class="btn btn-sm btn-outline-primary"
+                      (click)="selectUserForEmail(user.id)">
                       📧 Email
                     </button>
-                    <button class="btn btn-sm btn-outline-danger"
-                      (click)="deleteUser(user.id, user.fullName)"
+                    <button
+                      class="btn btn-sm btn-outline-danger"
+                      (click)="deleteUser(
+                        user.id, user.fullName)"
                       [disabled]="isDeletingId === user.id">
-                      <span *ngIf="isDeletingId===user.id" class="spinner-border spinner-border-sm me-1"></span>
+                      <span *ngIf="isDeletingId===user.id"
+                        class="spinner-border
+                               spinner-border-sm me-1">
+                      </span>
                       🗑️ Delete
                     </button>
                   </div>
                 </td>
               </tr>
               <tr *ngIf="instructors.length===0">
-                <td colspan="5" class="text-center text-muted py-3">No instructors found</td>
+                <td colspan="5"
+                  class="text-center text-muted py-3">
+                  No instructors found
+                </td>
               </tr>
             </tbody>
           </table>
@@ -234,16 +331,22 @@
       </div>
     </div>
 
-    <!-- All Users -->
-    <div class="card border-0 shadow-sm" *ngIf="activeUserTab==='all'">
+    <!-- ── All Users ── -->
+    <div class="card border-0 shadow-sm"
+      *ngIf="activeUserTab==='all'">
       <div class="card-header bg-white border-0 pt-3">
-        <div class="d-flex justify-content-between align-items-center">
-          <h5 class="fw-bold mb-0" style="color:#1F4E79;">👥 All Users</h5>
+        <div class="d-flex justify-content-between
+                    align-items-center">
+          <h5 class="fw-bold mb-0" style="color:#1F4E79;">
+            👥 All Users
+          </h5>
           <div class="input-group" style="max-width:300px;">
             <span class="input-group-text bg-white">🔍</span>
-            <input type="text" class="form-control border-start-0"
+            <input type="text"
+              class="form-control border-start-0"
               placeholder="Search users..."
-              [(ngModel)]="searchUser" (input)="searchUsers()" />
+              [(ngModel)]="searchUser"
+              (input)="searchUsers()" />
           </div>
         </div>
       </div>
@@ -251,30 +354,59 @@
         <div class="table-responsive">
           <table class="table table-hover align-middle">
             <thead class="table-light">
-              <tr><th>#</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let user of filteredUsers; let i=index">
+              <tr *ngFor="let user of filteredUsers;
+                          let i=index">
                 <td class="text-muted">{{ i+1 }}</td>
-                <td class="fw-semibold">{{ user.fullName }}</td>
-                <td class="text-muted small">{{ user.email }}</td>
                 <td>
-                  <span class="badge" [ngClass]="getRoleBadgeColor(user)">{{ getUserRole(user) }}</span>
+                  <a [routerLink]="['/profile/view', user.id]"
+                    class="fw-semibold text-dark
+                           text-decoration-none">
+                    {{ user.fullName }}
+                    <small class="text-primary ms-1">→</small>
+                  </a>
+                </td>
+                <td class="text-muted small">
+                  {{ user.email }}
                 </td>
                 <td>
-                  <span class="badge" [class.bg-success]="user.enabled" [class.bg-danger]="!user.enabled">
+                  <span class="badge"
+                    [ngClass]="getRoleBadgeColor(user)">
+                    {{ getUserRole(user) }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge"
+                    [class.bg-success]="user.enabled"
+                    [class.bg-danger]="!user.enabled">
                     {{ user.enabled ? 'Active' : 'Disabled' }}
                   </span>
                 </td>
                 <td>
                   <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-outline-primary" (click)="selectUserForEmail(user.id)">
+                    <button
+                      class="btn btn-sm btn-outline-primary"
+                      (click)="selectUserForEmail(user.id)">
                       📧 Email
                     </button>
-                    <button class="btn btn-sm btn-outline-danger"
-                      (click)="deleteUser(user.id, user.fullName)"
+                    <button
+                      class="btn btn-sm btn-outline-danger"
+                      (click)="deleteUser(
+                        user.id, user.fullName)"
                       [disabled]="isDeletingId === user.id">
-                      <span *ngIf="isDeletingId===user.id" class="spinner-border spinner-border-sm me-1"></span>
+                      <span *ngIf="isDeletingId===user.id"
+                        class="spinner-border
+                               spinner-border-sm me-1">
+                      </span>
                       🗑️ Delete
                     </button>
                   </div>
@@ -291,23 +423,41 @@
   <div *ngIf="!isLoading && activeTab==='courses'">
     <div class="card border-0 shadow-sm">
       <div class="card-header bg-white border-0 pt-3">
-        <h5 class="fw-bold mb-0" style="color:#1F4E79;">📚 All Courses</h5>
+        <h5 class="fw-bold mb-0" style="color:#1F4E79;">
+          📚 All Courses
+        </h5>
       </div>
       <div class="card-body">
         <div class="table-responsive">
           <table class="table table-hover align-middle">
             <thead class="table-light">
-              <tr><th>#</th><th>Title</th><th>Subject</th><th>Instructor</th><th>Students</th><th>Status</th></tr>
+              <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Subject</th>
+                <th>Instructor</th>
+                <th>Students</th>
+                <th>Status</th>
+              </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let course of courses; let i=index">
+              <tr *ngFor="let course of courses;
+                          let i=index">
                 <td class="text-muted">{{ i+1 }}</td>
                 <td class="fw-semibold">{{ course.title }}</td>
-                <td><span class="badge bg-light text-dark">{{ course.subject }}</span></td>
-                <td class="small text-muted">{{ course.instructorName }}</td>
+                <td>
+                  <span class="badge bg-light text-dark">
+                    {{ course.subject }}
+                  </span>
+                </td>
+                <td class="small text-muted">
+                  {{ course.instructorName }}
+                </td>
                 <td>👥 {{ course.enrollmentCount }}</td>
                 <td>
-                  <span class="badge" [class.bg-success]="course.published" [class.bg-secondary]="!course.published">
+                  <span class="badge"
+                    [class.bg-success]="course.published"
+                    [class.bg-secondary]="!course.published">
                     {{ course.published ? 'Published' : 'Draft' }}
                   </span>
                 </td>
@@ -324,32 +474,65 @@
     <div class="row justify-content-center">
       <div class="col-md-7">
         <div class="card border-0 shadow-sm p-4">
-          <h5 class="fw-bold mb-4" style="color:#1F4E79;">📧 Send Email to User</h5>
 
-          <div class="alert alert-success" *ngIf="emailSuccess">✅ {{ emailSuccess }}</div>
-          <div class="alert alert-danger" *ngIf="emailError">❌ {{ emailError }}</div>
+          <h5 class="fw-bold mb-4" style="color:#1F4E79;">
+            📧 Send Email to User
+          </h5>
+
+          <div class="alert alert-success"
+            *ngIf="emailSuccess">
+            ✅ {{ emailSuccess }}
+          </div>
+          <div class="alert alert-danger"
+            *ngIf="emailError">
+            ❌ {{ emailError }}
+          </div>
 
           <div class="mb-3">
-            <label class="form-label fw-semibold">Select User</label>
-            <select class="form-select" [(ngModel)]="selectedUserId">
-              <option [value]="null">-- Select a user --</option>
-              <option *ngFor="let user of users" [value]="user.id">
+            <label class="form-label fw-semibold">
+              Select User
+            </label>
+            <select class="form-select"
+              [(ngModel)]="selectedUserId">
+              <option [value]="null">
+                -- Select a user --
+              </option>
+              <option *ngFor="let user of users"
+                [value]="user.id">
                 {{ user.fullName }} ({{ user.email }})
               </option>
             </select>
           </div>
+
           <div class="mb-3">
-            <label class="form-label fw-semibold">Subject</label>
-            <input type="text" class="form-control" placeholder="Email subject..." [(ngModel)]="emailSubject" />
+            <label class="form-label fw-semibold">
+              Subject
+            </label>
+            <input type="text" class="form-control"
+              placeholder="Email subject..."
+              [(ngModel)]="emailSubject" />
           </div>
+
           <div class="mb-4">
-            <label class="form-label fw-semibold">Message</label>
-            <textarea class="form-control" rows="5" placeholder="Write your message..." [(ngModel)]="emailBody"></textarea>
+            <label class="form-label fw-semibold">
+              Message
+            </label>
+            <textarea class="form-control" rows="5"
+              placeholder="Write your message here..."
+              [(ngModel)]="emailBody">
+            </textarea>
           </div>
-          <button class="btn btn-primary btn-lg w-100 fw-bold" (click)="sendEmail()" [disabled]="isSendingEmail">
-            <span *ngIf="isSendingEmail" class="spinner-border spinner-border-sm me-2"></span>
+
+          <button
+            class="btn btn-primary btn-lg w-100 fw-bold"
+            (click)="sendEmail()"
+            [disabled]="isSendingEmail">
+            <span *ngIf="isSendingEmail"
+              class="spinner-border spinner-border-sm me-2">
+            </span>
             {{ isSendingEmail ? 'Sending...' : '📧 Send Email' }}
           </button>
+
         </div>
       </div>
     </div>
