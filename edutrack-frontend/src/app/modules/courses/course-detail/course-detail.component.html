@@ -1,9 +1,6 @@
 <div class="container py-4" *ngIf="!isLoading && course">
 
   <!-- Course Header -->
-  <div class="container py-4" *ngIf="!isLoading && course">
-
-  <!-- Course Header -->
   <div class="course-header p-4 mb-4 text-white rounded-3">
     <div class="row align-items-center">
       <div class="col-md-8">
@@ -12,9 +9,10 @@
         </span>
         <h2 class="fw-bold mb-2">{{ course.title }}</h2>
         <p class="opacity-75 mb-3">{{ course.description }}</p>
-        <div class="d-flex gap-4">
+        <div class="d-flex gap-4 flex-wrap">
           <span>👨‍🏫 {{ course.instructorName }}</span>
           <span>👥 {{ course.enrollmentCount }} students</span>
+          <span>📚 {{ sections.length }} sections</span>
           <span class="badge"
             [class.bg-success]="course.published"
             [class.bg-secondary]="!course.published">
@@ -34,7 +32,7 @@
           ⚠️ {{ errorMessage }}
         </div>
 
-        <!-- Student Enroll Button -->
+        <!-- Student Enroll -->
         <button *ngIf="isStudent && !successMessage"
           class="btn btn-warning btn-lg fw-bold mb-2"
           (click)="enroll()"
@@ -48,56 +46,234 @@
         <!-- Instructor Buttons -->
         <div *ngIf="isInstructor && isOwner()"
           class="d-flex flex-column gap-2">
-
-          <!-- Publish / Unpublish -->
-          <button
-            class="btn btn-lg fw-bold"
+          <button class="btn btn-lg fw-bold"
             [class.btn-success]="!course.published"
             [class.btn-warning]="course.published"
             (click)="togglePublish()"
             [disabled]="isPublishing">
-            <span *ngIf="isPublishing"
-              class="spinner-border spinner-border-sm me-2">
-            </span>
             {{ course.published
-              ? '📝 Unpublish Course'
-              : '🚀 Publish Course' }}
+              ? '📝 Unpublish' : '🚀 Publish Course' }}
           </button>
-
-          <!-- Add Quiz Button -->
           <a [routerLink]="['/quiz/create', course.id]"
-            class="btn btn-outline-light btn-lg fw-bold">
+            class="btn btn-outline-light fw-bold">
             + Add Quiz
           </a>
-
+          <button class="btn btn-outline-light fw-bold"
+            (click)="showAddSection = !showAddSection">
+            + Add Section
+          </button>
         </div>
 
       </div>
     </div>
   </div>
 
-  <!-- Quizzes Section -->
-  <div class="card border-0 shadow-sm">
+  <!-- Student Progress Bar -->
+  <div class="card border-0 shadow-sm mb-4"
+    *ngIf="isStudent && sections.length > 0">
+    <div class="card-body">
+      <div class="d-flex justify-content-between mb-2">
+        <span class="fw-semibold">
+          📈 Your Progress
+        </span>
+        <span class="fw-bold text-primary">
+          {{ completedSections }}/{{ sections.length }}
+          sections ({{ progressPercent }}%)
+        </span>
+      </div>
+      <div class="progress" style="height:12px;
+                  border-radius:10px;">
+        <div class="progress-bar"
+          [class.bg-success]="progressPercent===100"
+          [class.bg-primary]="progressPercent < 100"
+          [style.width.%]="progressPercent"
+          style="border-radius:10px;
+                 transition: width 0.5s ease;">
+        </div>
+      </div>
+      <small class="text-muted mt-1 d-block">
+        {{ progressPercent === 100
+          ? '🎉 Course Complete!'
+          : 'Keep going! Mark sections as done below.' }}
+      </small>
+    </div>
+  </div>
+
+  <!-- Add Section Form (Instructor) -->
+  <div class="card border-0 shadow-sm mb-4"
+    *ngIf="showAddSection && isInstructor && isOwner()">
     <div class="card-header bg-white border-0 pt-3">
       <h5 class="fw-bold mb-0" style="color:#1F4E79;">
-        📝 Quizzes in This Course
+        ➕ Add New Section
       </h5>
     </div>
     <div class="card-body">
-      <div *ngIf="quizzes.length === 0"
-        class="text-center py-4">
-        <p class="text-muted">
-          No quizzes available yet for this course.
-        </p>
-        <a *ngIf="isInstructor && isOwner()"
-          [routerLink]="['/quiz/create', course.id]"
-          class="btn btn-primary">
-          + Create First Quiz
-        </a>
-      </div>
       <div class="row g-3">
-        <div class="col-md-6" *ngFor="let quiz of quizzes">
-          <div class="quiz-card p-3 rounded-3 border">
+        <div class="col-md-8">
+          <label class="form-label fw-semibold">
+            Section Title <span class="text-danger">*</span>
+          </label>
+          <input type="text" class="form-control"
+            placeholder="e.g. Introduction to Java"
+            [(ngModel)]="newSectionTitle" />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">
+            Duration (minutes)
+          </label>
+          <input type="number" class="form-control"
+            placeholder="e.g. 30"
+            [(ngModel)]="newSectionDuration" />
+        </div>
+        <div class="col-12">
+          <label class="form-label fw-semibold">
+            Description
+          </label>
+          <textarea class="form-control" rows="2"
+            placeholder="What will students learn in this section?"
+            [(ngModel)]="newSectionDescription">
+          </textarea>
+        </div>
+        <div class="col-12">
+          <label class="form-label fw-semibold">
+            Content URL (optional)
+          </label>
+          <input type="url" class="form-control"
+            placeholder="https://youtube.com/watch?v=..."
+            [(ngModel)]="newSectionUrl" />
+        </div>
+        <div class="col-12 d-flex gap-2">
+          <button class="btn btn-primary fw-bold"
+            (click)="addSection()"
+            [disabled]="isAddingSection || !newSectionTitle">
+            <span *ngIf="isAddingSection"
+              class="spinner-border spinner-border-sm me-2">
+            </span>
+            {{ isAddingSection ? 'Adding...' : '✅ Add Section' }}
+          </button>
+          <button class="btn btn-outline-secondary"
+            (click)="showAddSection = false">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- Sections -->
+    <div class="col-md-7">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-0 pt-3">
+          <h5 class="fw-bold mb-0" style="color:#1F4E79;">
+            📚 Course Sections
+          </h5>
+        </div>
+        <div class="card-body">
+          <div *ngIf="sections.length === 0"
+            class="text-center py-4">
+            <p class="text-muted">
+              No sections added yet.
+            </p>
+            <button *ngIf="isInstructor && isOwner()"
+              class="btn btn-primary btn-sm"
+              (click)="showAddSection = true">
+              + Add First Section
+            </button>
+          </div>
+
+          <div *ngFor="let section of sections"
+            class="section-item mb-3 p-3 rounded-3"
+            [class.section-completed]="section.completedByStudent">
+
+            <div class="d-flex justify-content-between
+                        align-items-start">
+              <div class="d-flex gap-3 flex-grow-1">
+
+                <!-- Completion Button (Student) -->
+                <button *ngIf="isStudent"
+                  class="btn btn-sm rounded-circle flex-shrink-0"
+                  style="width:36px;height:36px;"
+                  [class.btn-success]="section.completedByStudent"
+                  [class.btn-outline-secondary]="!section.completedByStudent"
+                  (click)="toggleSectionComplete(section)"
+                  [title]="section.completedByStudent
+                    ? 'Mark as incomplete'
+                    : 'Mark as complete'">
+                  {{ section.completedByStudent ? '✓' : '' }}
+                </button>
+
+                <!-- Section Number (Instructor) -->
+                <div *ngIf="!isStudent"
+                  class="section-number flex-shrink-0">
+                  {{ section.sectionOrder }}
+                </div>
+
+                <!-- Section Info -->
+                <div class="flex-grow-1">
+                  <h6 class="fw-bold mb-1"
+                    [class.text-decoration-line-through]="section.completedByStudent"
+                    [class.text-muted]="section.completedByStudent">
+                    {{ section.title }}
+                  </h6>
+                  <p class="text-muted small mb-1"
+                    *ngIf="section.description">
+                    {{ section.description }}
+                  </p>
+                  <div class="d-flex gap-3">
+                    <small class="text-muted"
+                      *ngIf="section.durationMinutes">
+                      ⏱️ {{ section.durationMinutes }} min
+                    </small>
+                    <a *ngIf="section.contentUrl"
+                      [href]="section.contentUrl"
+                      target="_blank"
+                      class="small text-primary">
+                      🔗 View Content
+                    </a>
+                    <small class="text-success fw-semibold"
+                      *ngIf="section.completedByStudent">
+                      ✅ Completed
+                    </small>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Delete (Instructor) -->
+              <button *ngIf="isInstructor && isOwner()"
+                class="btn btn-sm btn-outline-danger ms-2"
+                (click)="deleteSection(section.id)">
+                🗑️
+              </button>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quizzes -->
+    <div class="col-md-5">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-0 pt-3">
+          <h5 class="fw-bold mb-0" style="color:#1F4E79;">
+            📝 Quizzes
+          </h5>
+        </div>
+        <div class="card-body">
+          <div *ngIf="quizzes.length === 0"
+            class="text-center py-4">
+            <p class="text-muted">No quizzes yet.</p>
+            <a *ngIf="isInstructor && isOwner()"
+              [routerLink]="['/quiz/create', course.id]"
+              class="btn btn-primary btn-sm">
+              + Create First Quiz
+            </a>
+          </div>
+          <div class="quiz-card p-3 rounded-3 border mb-3"
+            *ngFor="let quiz of quizzes">
             <div class="d-flex justify-content-between
                         align-items-start mb-2">
               <h6 class="fw-bold mb-0">{{ quiz.title }}</h6>
@@ -106,17 +282,12 @@
                 {{ quiz.difficulty }}
               </span>
             </div>
-            <p class="text-muted small mb-2">
-              {{ quiz.description }}
-            </p>
             <div class="d-flex justify-content-between
                         align-items-center">
-              <div class="small text-muted">
-                <span class="me-3">
-                  ❓ {{ quiz.totalQuestions }} questions
-                </span>
-                <span>⏱️ {{ quiz.timeLimitMinutes }} mins</span>
-              </div>
+              <small class="text-muted">
+                ❓ {{ quiz.totalQuestions }} Q •
+                ⏱️ {{ quiz.timeLimitMinutes }} min
+              </small>
               <div class="d-flex gap-2">
                 <a *ngIf="isStudent"
                   [routerLink]="['/quiz', quiz.id]"
@@ -134,66 +305,8 @@
         </div>
       </div>
     </div>
-  </div>
 
-</div>
-
-<!-- Loading -->
-<div class="text-center py-5" *ngIf="isLoading">
-  <div class="spinner-border text-primary"
-    style="width:3rem;height:3rem;">
   </div>
-  <p class="mt-3 text-muted">Loading course...</p>
-</div>
-  <!-- Quizzes Section -->
-  <div class="card border-0 shadow-sm">
-    <div class="card-header bg-white border-0 pt-3">
-      <h5 class="fw-bold mb-0" style="color:#1F4E79;">
-        📝 Quizzes in This Course
-      </h5>
-    </div>
-    <div class="card-body">
-      <div *ngIf="quizzes.length === 0"
-        class="text-center py-4">
-        <p class="text-muted">
-          No quizzes available yet for this course.
-        </p>
-      </div>
-      <div class="row g-3">
-        <div class="col-md-6"
-          *ngFor="let quiz of quizzes">
-          <div class="quiz-card p-3 rounded-3 border">
-            <div class="d-flex justify-content-between
-                        align-items-start mb-2">
-              <h6 class="fw-bold mb-0">{{ quiz.title }}</h6>
-              <span class="badge"
-                [ngClass]="getDifficultyColor(quiz.difficulty)">
-                {{ quiz.difficulty }}
-              </span>
-            </div>
-            <p class="text-muted small mb-2">
-              {{ quiz.description }}
-            </p>
-            <div class="d-flex justify-content-between
-                        align-items-center">
-              <div class="small text-muted">
-                <span class="me-3">
-                  ❓ {{ quiz.totalQuestions }} questions
-                </span>
-                <span>⏱️ {{ quiz.timeLimitMinutes }} mins</span>
-              </div>
-              <a *ngIf="isStudent"
-                [routerLink]="['/quiz', quiz.id]"
-                class="btn btn-primary btn-sm">
-                Attempt →
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
 </div>
 
 <!-- Loading -->
