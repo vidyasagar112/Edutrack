@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ProfileService } from '../../../core/services/profile.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-my-profile',

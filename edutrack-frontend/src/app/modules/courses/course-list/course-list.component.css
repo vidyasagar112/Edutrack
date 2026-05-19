@@ -1,11 +1,10 @@
-.search-bar .form-control {
-  border-radius: 0 10px 10px 0;
-  border-color: #dee2e6;
+.filter-card {
+  border-radius: 15px;
 }
 
-.search-bar .input-group-text {
-  border-radius: 10px 0 0 10px;
-  border-color: #dee2e6;
+.form-control, .form-select {
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
 }
 
 .course-card {
@@ -19,6 +18,8 @@
 }
 
 .course-banner {
-  height: 140px;
+  height: 160px;
   border-radius: 15px 15px 0 0;
+  background-size: cover;
+  background-position: center;
 }

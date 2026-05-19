@@ -7,6 +7,8 @@ import { QuizService } from '../../../core/services/quiz.service';
 import { EnrollmentService } from '../../../core/services/enrollment.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { SectionService } from '../../../core/services/section.service';
+import { DocumentService } from '../../../core/services/document.service';
+import { RatingService } from '../../../core/services/rating.service';
 
 @Component({
   selector: 'app-course-detail',
@@ -36,13 +38,25 @@ export class CourseDetailComponent implements OnInit {
   newSectionUrl = '';
   isAddingSection = false;
 
+  // documents and ratings
+  documents: any[] = [];
+  ratings: any[] = [];
+  myRating: any = null;
+  selectedRating = 0;
+  reviewText = '';
+  isSubmittingRating = false;
+  isEnrolled = false;
+  isUploadingDoc = false;
+
   constructor(
     private route: ActivatedRoute,
     private courseService: CourseService,
     private quizService: QuizService,
     private enrollmentService: EnrollmentService,
     private authService: AuthService,
-    private sectionService: SectionService
+    private sectionService: SectionService,
+    private documentService: DocumentService,
+    private ratingService: RatingService
   ) {}
 
   ngOnInit(): void {
@@ -60,6 +74,8 @@ export class CourseDetailComponent implements OnInit {
         this.course = res.data;
         this.loadQuizzes(id);
         this.loadSections(id);
+        this.loadDocuments(id);
+        this.loadRatings(id);
       }
     });
   }
@@ -81,6 +97,33 @@ export class CourseDetailComponent implements OnInit {
           this.sections = res.data || [];
         }
       });
+  }
+
+  loadDocuments(id: number): void {
+    this.documentService.getDocuments(id).subscribe({
+      next: (res) => {
+        this.documents = res.data || [];
+      }
+    });
+  }
+
+  loadRatings(id: number): void {
+    this.ratingService.getCourseRatings(id).subscribe({
+      next: (res) => {
+        this.ratings = res.data || [];
+      }
+    });
+    if (this.isStudent) {
+      this.ratingService.getMyRating(id).subscribe({
+        next: (res) => {
+          if (res.data) {
+            this.myRating = res.data;
+            this.selectedRating = res.data.rating;
+            this.reviewText = res.data.review || '';
+          }
+        }
+      });
+    }
   }
 
   enroll(): void {
@@ -218,5 +261,76 @@ export class CourseDetailComponent implements OnInit {
       'HARD'  : 'bg-danger'
     };
     return colors[difficulty] || 'bg-secondary';
+  }
+
+  onDocumentUpload(event: any): void {
+    const file = event.target.files[0];
+    if (!file) return;
+    this.isUploadingDoc = true;
+    this.documentService.uploadDocument(
+      this.course.id, file).subscribe({
+      next: (res) => {
+        this.isUploadingDoc = false;
+        this.documents.push(res.data);
+        this.successMessage = 'Document uploaded!';
+        setTimeout(() => this.successMessage = '', 3000);
+      },
+      error: (err) => {
+        this.isUploadingDoc = false;
+        this.errorMessage =
+          err.error?.message || 'Upload failed!';
+      }
+    });
+  }
+
+  deleteDocument(docId: number): void {
+    if (!confirm('Delete this document?')) return;
+    this.documentService.deleteDocument(docId).subscribe({
+      next: () => {
+        this.documents = this.documents.filter(
+          d => d.id !== docId);
+      }
+    });
+  }
+
+  submitRating(): void {
+    if (this.selectedRating === 0) return;
+    this.isSubmittingRating = true;
+    this.ratingService.rateCourse(
+      this.course.id,
+      this.selectedRating,
+      this.reviewText).subscribe({
+      next: (res) => {
+        this.isSubmittingRating = false;
+        this.myRating = res.data;
+        this.loadRatings(this.course.id);
+        this.successMessage = 'Rating submitted! Thank you!';
+        setTimeout(() => this.successMessage = '', 3000);
+      },
+      error: () => {
+        this.isSubmittingRating = false;
+      }
+    });
+  }
+
+  getFileIcon(fileType: string): string {
+    if (!fileType) return '📄';
+    if (fileType.includes('pdf')) return '📕';
+    if (fileType.includes('word') ||
+        fileType.includes('msword')) return '📘';
+    if (fileType.includes('excel') ||
+        fileType.includes('sheet')) return '📗';
+    if (fileType.includes('powerpoint') ||
+        fileType.includes('presentation')) return '📙';
+    return '📄';
+  }
+
+  getDownloadUrl(docId: number): string {
+    return this.documentService.getDownloadUrl(docId);
+  }
+
+  getStars(rating: number): string {
+    const full = Math.round(rating);
+    return '⭐'.repeat(full) + '☆'.repeat(5 - full);
   }
 }

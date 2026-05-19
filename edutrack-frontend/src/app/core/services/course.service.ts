@@ -40,4 +40,33 @@ export class CourseService {
   deleteCourse(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/courses/${id}`);
   }
+
+  searchWithFilters(keyword: string, category: string,
+                  subject: string): Observable<any> {
+  const params = new URLSearchParams();
+  if (keyword) params.append('keyword', keyword);
+  if (category) params.append('category', category);
+  if (subject) params.append('subject', subject);
+  return this.http.get(
+    `${this.apiUrl}/courses/search-filter?${params}`);
+}
+
+getCategories(): Observable<any> {
+  return this.http.get(
+    `${this.apiUrl}/courses/categories`);
+}
+
+getSubjects(): Observable<any> {
+  return this.http.get(
+    `${this.apiUrl}/courses/subjects`);
+}
+
+uploadThumbnail(courseId: number,
+                file: File): Observable<any> {
+  const formData = new FormData();
+  formData.append('file', file);
+  return this.http.post(
+    `${this.apiUrl}/courses/${courseId}/thumbnail`,
+    formData);
+}
 }

@@ -14,6 +14,10 @@ public class CourseResponse {
     private String instructorEmail;
     private long enrollmentCount;
     private LocalDateTime createdAt;
+    private String category;
+    private String tags;
+    private double averageRating;
+    private int totalRatings;
 
     // Constructor
     public CourseResponse() {}
@@ -65,4 +69,23 @@ public class CourseResponse {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    
+    public String getCategory() { return category; }
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getTags() { return tags; }
+    public void setTags(String tags) { this.tags = tags; }
+
+    public double getAverageRating() { return averageRating; }
+    public void setAverageRating(double averageRating) {
+        this.averageRating = averageRating;
+    }
+
+    public int getTotalRatings() { return totalRatings; }
+    public void setTotalRatings(int totalRatings) {
+        this.totalRatings = totalRatings;
+    }
+
 }

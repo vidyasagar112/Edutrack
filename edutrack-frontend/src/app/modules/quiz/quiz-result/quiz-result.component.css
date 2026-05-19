@@ -1,11 +1,9 @@
 .result-card {
-  max-width: 500px;
+  max-width: 550px;
   border-radius: 20px;
 }
 
-.result-icon {
-  font-size: 5rem;
-}
+.result-icon { font-size: 5rem; }
 
 .score-circle {
   width: 150px;
@@ -36,4 +34,61 @@
 .score-label {
   font-size: 0.8rem;
   color: #6c757d;
+}
+
+.question-review {
+  border: 2px solid #e9ecef;
+  transition: all 0.2s;
+}
+
+.review-correct {
+  background: #f0fdf4 !important;
+  border-color: #86efac !important;
+}
+
+.review-wrong {
+  background: #fff5f5 !important;
+  border-color: #fca5a5 !important;
+}
+
+.review-skipped {
+  background: #f8f9fa !important;
+  border-color: #e9ecef !important;
+}
+
+.option-box {
+  border: 2px solid #e9ecef;
+  font-size: 13px;
+  background: white;
+}
+
+.option-correct {
+  background: #d1fae5 !important;
+  border-color: #059669 !important;
+  color: #065f46;
+  font-weight: 600;
+}
+
+.option-wrong {
+  background: #fee2e2 !important;
+  border-color: #dc2626 !important;
+  color: #7f1d1d;
+}
+
+.option-neutral {
+  background: white;
+  border-color: #e9ecef;
+}
+
+.option-label {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background: #1F4E79;
+  color: white;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 24px;
+  font-size: 11px;
+  font-weight: bold;
 }

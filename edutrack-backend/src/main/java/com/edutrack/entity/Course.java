@@ -38,6 +38,20 @@ public class Course {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+    
+    
+    @Column(name = "category")
+    private String category;
+
+    @Column(name = "tags")
+    private String tags; 
+    
+    @Column(name = "average_rating")
+    private double averageRating = 0.0;
+
+    @Column(name = "total_ratings")
+    private int totalRatings = 0;
+    
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "instructor_id", nullable = false)
@@ -74,4 +88,22 @@ public class Course {
 
     public User getInstructor() { return instructor; }
     public void setInstructor(User instructor) { this.instructor = instructor; }
+    
+    public String getCategory() { return category; }
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getTags() { return tags; }
+    public void setTags(String tags) { this.tags = tags; }
+
+    public double getAverageRating() { return averageRating; }
+    public void setAverageRating(double averageRating) {
+        this.averageRating = averageRating;
+    }
+
+    public int getTotalRatings() { return totalRatings; }
+    public void setTotalRatings(int totalRatings) {
+        this.totalRatings = totalRatings;
+    }
 }

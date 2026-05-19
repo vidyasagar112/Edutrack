@@ -160,6 +160,8 @@
     </div>
   </div>
 
+  
+
   <div class="row g-4">
 
     <!-- Sections -->
@@ -306,6 +308,147 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- Documents Section -->
+  <div class="col-12 mt-4">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-0 pt-3">
+        <div class="d-flex justify-content-between
+                    align-items-center">
+          <h5 class="fw-bold mb-0" style="color:#1F4E79;">
+            📁 Course Materials
+          </h5>
+          <!-- Upload Button for Instructor -->
+          <label *ngIf="isInstructor && isOwner()"
+            class="btn btn-outline-primary btn-sm mb-0"
+            for="docUpload">
+            ⬆️ Upload Document
+          </label>
+          <input type="file" id="docUpload"
+            class="d-none"
+            accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+            (change)="onDocumentUpload($event)" />
+        </div>
+      </div>
+      <div class="card-body">
+        <div *ngIf="documents.length===0"
+          class="text-center py-3">
+          <p class="text-muted small">
+            No materials uploaded yet
+          </p>
+        </div>
+        <div *ngFor="let doc of documents"
+          class="doc-item d-flex justify-content-between
+                 align-items-center mb-3 p-3 rounded-3">
+          <div class="d-flex align-items-center gap-3">
+            <span style="font-size:1.8rem;">
+              {{ getFileIcon(doc.fileType) }}
+            </span>
+            <div>
+              <p class="fw-semibold mb-0 small">
+                {{ doc.fileName }}
+              </p>
+              <small class="text-muted">
+                {{ doc.fileSizeFormatted }} •
+                Uploaded by {{ doc.uploadedBy }}
+              </small>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <a [href]="getDownloadUrl(doc.id)"
+              class="btn btn-sm btn-outline-primary"
+              download>
+              ⬇️ Download
+            </a>
+            <button *ngIf="isInstructor && isOwner()"
+              class="btn btn-sm btn-outline-danger"
+              (click)="deleteDocument(doc.id)">
+              🗑️
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ratings and Reviews Section -->
+  <div class="col-12 mt-4">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-0 pt-3">
+        <h5 class="fw-bold mb-0" style="color:#1F4E79;">
+          ⭐ Ratings & Reviews
+        </h5>
+      </div>
+      <div class="card-body">
+
+        <!-- Average Rating Display -->
+        <div class="text-center mb-4"
+          *ngIf="course.totalRatings > 0">
+          <h1 class="fw-bold text-warning">
+            {{ course.averageRating }}
+          </h1>
+          <div class="fs-4 text-warning">
+            {{ getStars(course.averageRating) }}
+          </div>
+          <p class="text-muted small">
+            Based on {{ course.totalRatings }} reviews
+          </p>
+        </div>
+
+        <!-- Student Rate Form -->
+        <div *ngIf="isStudent && isEnrolled"
+          class="rate-form p-3 rounded-3 mb-4">
+          <h6 class="fw-bold mb-3">
+            {{ myRating ? 'Update Your Rating' : 'Rate This Course' }}
+          </h6>
+          <div class="d-flex gap-2 mb-3">
+            <button *ngFor="let star of [1,2,3,4,5]"
+              class="btn btn-sm star-btn"
+              [class.btn-warning]="star <= selectedRating"
+              [class.btn-outline-secondary]="star > selectedRating"
+              (click)="selectedRating = star">
+              ⭐ {{ star }}
+            </button>
+          </div>
+          <textarea class="form-control mb-3"
+            rows="3"
+            placeholder="Write your review (optional)..."
+            [(ngModel)]="reviewText">
+          </textarea>
+          <button class="btn btn-primary"
+            (click)="submitRating()"
+            [disabled]="selectedRating === 0 ||
+                        isSubmittingRating">
+            {{ isSubmittingRating
+              ? 'Submitting...' : '⭐ Submit Rating' }}
+          </button>
+        </div>
+
+        <!-- Reviews List -->
+        <div *ngFor="let rating of ratings"
+          class="review-item mb-3 p-3 rounded-3">
+          <div class="d-flex justify-content-between mb-1">
+            <span class="fw-semibold">
+              {{ rating.studentName }}
+            </span>
+            <span class="text-warning">
+              {{ '⭐'.repeat(rating.rating) }}
+            </span>
+          </div>
+          <p class="text-muted small mb-0"
+            *ngIf="rating.review">
+            {{ rating.review }}
+          </p>
+        </div>
+
+        <div *ngIf="ratings.length===0"
+          class="text-center py-3">
+          <p class="text-muted">No reviews yet!</p>
+        </div>
+
+      </div>
+    </div>
   </div>
 </div>
 

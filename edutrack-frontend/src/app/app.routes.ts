@@ -122,7 +122,30 @@ export const routes: Routes = [
     import('./modules/courses/course-students/course-students.component')
       .then(m => m.CourseStudentsComponent)
 },
+{
+  path: 'forgot-password',
+  loadComponent: () =>
+    import('./modules/auth/forgot-password/forgot-password.component')
+      .then(m => m.ForgotPasswordComponent)
+},
+{
+  path: 'reset-password',
+  loadComponent: () =>
+    import('./modules/auth/reset-password/reset-password.component')
+      .then(m => m.ResetPasswordComponent)
+},
+{
+  path: 'verify-email',
+  loadComponent: () =>
+    import('./modules/auth/verify-email/verify-email.component')
+      .then(m => m.VerifyEmailComponent)
+},
 
   // fallback
-  { path: '**', redirectTo: '/home' }
+  {
+  path: '**',
+  loadComponent: () =>
+    import('./modules/not-found/not-found.component')
+      .then(m => m.NotFoundComponent)
+}
 ];

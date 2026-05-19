@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { QuizService } from '../../../core/services/quiz.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-add-question',
@@ -30,7 +31,8 @@ export class AddQuestionComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private quizService: QuizService
+    private quizService: QuizService,
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -75,10 +77,12 @@ export class AddQuestionComponent implements OnInit {
           `Question ${this.addedQuestions.length + 1} added!`;
         this.addedQuestions.push(res.data);
         this.clearForm();
+        this.toast.show(this.successMessage, 'success');
         setTimeout(() => this.successMessage = '', 2000);
       },
       error: (err) => {
         this.isLoading = false;
+        this.toast.error(err.error?.message || 'Failed to add question!');  
         this.errorMessage =
           err.error?.message || 'Failed to add question!';
       }

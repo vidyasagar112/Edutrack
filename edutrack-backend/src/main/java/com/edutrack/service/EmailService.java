@@ -141,6 +141,82 @@ public class EmailService {
 
         sendEmail(to, subject, body);
     }
+    
+ // ── Forgot password email ───────────────────────────
+    public void sendForgotPasswordEmail(String to,
+                                         String fullName,
+                                         String resetToken) {
+        String resetLink = "http://localhost:4200/reset-password?token="
+                + resetToken;
+        String subject = "Reset Your EduTrack Password 🔐";
+        String body = """
+                <div style="font-family:Arial,sans-serif;
+                            max-width:600px;margin:auto;">
+                  <h2 style="color:#1F4E79;">
+                    Reset Your Password 🔐
+                  </h2>
+                  <p>Hi <b>%s</b>,</p>
+                  <p>We received a request to reset your password.</p>
+                  <p>Click the button below to reset it:</p>
+                  <div style="text-align:center;margin:30px 0;">
+                    <a href="%s"
+                       style="background:#1F4E79;color:white;
+                              padding:14px 28px;border-radius:8px;
+                              text-decoration:none;font-weight:bold;
+                              font-size:16px;">
+                      Reset Password
+                    </a>
+                  </div>
+                  <p style="color:#666;">
+                    This link expires in <b>30 minutes</b>.
+                  </p>
+                  <p style="color:#666;">
+                    If you didn't request this, ignore this email.
+                  </p>
+                  <br>
+                  <p>Best regards,<br><b>EduTrack Team</b></p>
+                </div>
+                """.formatted(fullName, resetLink);
+
+        sendEmail(to, subject, body);
+    }
+
+    // ── Email verification email ────────────────────────
+    public void sendEmailVerificationEmail(String to,
+                                            String fullName,
+                                            String verifyToken) {
+        String verifyLink =
+                "http://localhost:4200/verify-email?token="
+                + verifyToken;
+        String subject = "Verify Your EduTrack Email ✅";
+        String body = """
+                <div style="font-family:Arial,sans-serif;
+                            max-width:600px;margin:auto;">
+                  <h2 style="color:#1F4E79;">
+                    Verify Your Email ✅
+                  </h2>
+                  <p>Hi <b>%s</b>,</p>
+                  <p>Welcome to EduTrack! Please verify your
+                     email to activate your account.</p>
+                  <div style="text-align:center;margin:30px 0;">
+                    <a href="%s"
+                       style="background:#059669;color:white;
+                              padding:14px 28px;border-radius:8px;
+                              text-decoration:none;font-weight:bold;
+                              font-size:16px;">
+                      Verify Email
+                    </a>
+                  </div>
+                  <p style="color:#666;">
+                    This link expires in <b>24 hours</b>.
+                  </p>
+                  <br>
+                  <p>Best regards,<br><b>EduTrack Team</b></p>
+                </div>
+                """.formatted(fullName, verifyLink);
+
+        sendEmail(to, subject, body);
+    }
 
     // ── send email to any user by id — admin only ───────────
     public void sendCustomEmail(Long userId, String subject, String body) {

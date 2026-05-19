@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CourseService } from '../../../core/services/course.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-create-course',
@@ -30,7 +31,9 @@ export class CreateCourseComponent {
 
   constructor(
     private courseService: CourseService,
-    private router: Router
+    private router: Router,
+    private toast: ToastService
+
   ) {}
 
   createCourse(): void {
@@ -51,17 +54,14 @@ export class CreateCourseComponent {
     }).subscribe({
       next: (res) => {
         this.isLoading = false;
-        if (res.success) {
-          this.successMessage = 'Course created successfully!';
-          setTimeout(() => {
-            this.router.navigate(['/courses', res.data.id]);
-          }, 1500);
-        }
+        this.successMessage = 'Course created successfully!';
+        this.toast.show(this.successMessage, 'success');    
       },
       error: (err) => {
         this.isLoading = false;
+        this.toast.error(err.error?.message || 'Failed to create course!');
         this.errorMessage =
-          err.error?.message || 'Failed to create course!';
+          err.error?.message || 'Failed to create course!'; 
       }
     });
   }

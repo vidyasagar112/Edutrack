@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,6 +42,23 @@ public class AdminController {
         long count = enrollmentRepository.count();
         return ResponseEntity.ok(
                 ApiResponse.success("Total enrollments", count));
+    }
+    
+    
+ // PATCH /api/admin/users/{id}/toggle-status
+    @PatchMapping("/users/{id}/toggle-status")
+    @Transactional
+    public ResponseEntity<ApiResponse<Void>> toggleUserStatus(
+            @PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException(
+                        "User not found: " + id));
+        user.setEnabled(!user.isEnabled());
+        userRepository.save(user);
+        String status = user.isEnabled()
+                ? "enabled" : "disabled";
+        return ResponseEntity.ok(ApiResponse.success(
+                "User " + status + " successfully", null));
     }
 
     // DELETE user — removes all related data first

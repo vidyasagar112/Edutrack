@@ -34,4 +34,10 @@ export class AdminService {
   return this.http.delete(
     `${this.apiUrl}/admin/users/${userId}`);
 }
+
+toggleUserStatus(userId: number): Observable<any> {
+  return this.http.patch(
+    `${this.apiUrl}/admin/users/${userId}/toggle-status`,
+    {});
+}
 }

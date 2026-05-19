@@ -108,24 +108,31 @@ export class TakeQuizComponent implements OnInit, OnDestroy {
   }
 
   submitQuiz(): void {
-    clearInterval(this.timer);
-    this.isSubmitting = true;
+  clearInterval(this.timer);
+  this.isSubmitting = true;
 
-    const request = {
-      quizId: this.quiz.id,
-      answers: this.answers
-    };
+  const request = {
+    quizId: this.quiz.id,
+    answers: this.answers
+  };
 
-    this.quizService.submitAttempt(request).subscribe({
-      next: (res) => {
-        this.router.navigate(['/quiz/result', res.data.id],
-          { state: { result: res.data } });
-      },
-      error: () => {
-        this.isSubmitting = false;
-      }
-    });
-  }
+  this.quizService.submitAttempt(request).subscribe({
+    next: (res) => {
+      this.router.navigate(
+        ['/quiz/result', res.data.id],
+        {
+          state: {
+            result: res.data,
+            answers: this.answers  // ← pass answers
+          }
+        }
+      );
+    },
+    error: () => {
+      this.isSubmitting = false;
+    }
+  });
+}
 
   ngOnDestroy(): void {
     clearInterval(this.timer);

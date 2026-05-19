@@ -71,6 +71,10 @@ public class User {
 
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
+    
+    @Column(name = "is_email_verified",
+            nullable = false)
+    private boolean emailVerified = false;
 
     @ManyToMany(fetch=FetchType.EAGER)
     @JoinTable(name="user_roles",
@@ -87,6 +91,13 @@ public class User {
     // ── Getters and Setters ─────────────────────────
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+    
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
 
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }

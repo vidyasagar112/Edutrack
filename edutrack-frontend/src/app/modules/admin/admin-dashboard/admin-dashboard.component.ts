@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { AdminService } from '../../../core/services/admin.service';
 import { CourseService } from '../../../core/services/course.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -41,6 +42,9 @@ export class AdminDashboardComponent implements OnInit {
   deleteSuccess = '';
   deleteError = '';
 
+  // toggle enable/disable
+  isTogglingId: number | null = null;
+
   // search
   searchUser = '';
 
@@ -52,7 +56,8 @@ export class AdminDashboardComponent implements OnInit {
   constructor(
     private adminService: AdminService,
     private courseService: CourseService,
-    private authService: AuthService
+    private authService: AuthService,
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -147,6 +152,29 @@ export class AdminDashboardComponent implements OnInit {
         setTimeout(() => this.deleteError = '', 3000);
       }
     });
+  }
+
+  toggleStatus(user: any): void {
+    const action = user.enabled ? 'disable' : 'enable';
+    if (!confirm(
+      `Are you sure you want to ${action}
+       ${user.fullName}?`)) return;
+
+    this.isTogglingId = user.id;
+
+    this.adminService.toggleUserStatus(user.id)
+      .subscribe({
+        next: () => {
+          this.isTogglingId = null;
+          user.enabled = !user.enabled;
+          this.toast.success(
+            `${user.fullName} ${action}d successfully!`);
+        },
+        error: () => {
+          this.isTogglingId = null;
+          this.toast.error('Failed to update user status!');
+        }
+      });
   }
 
   selectUserForEmail(userId: number): void {

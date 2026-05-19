@@ -45,3 +45,29 @@
 .form-control {
   border-radius: 8px;
 }
+
+.doc-item {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  transition: all 0.2s;
+}
+
+.doc-item:hover {
+  background: #e8f0fe;
+  border-color: #2E75B6;
+}
+
+.rate-form {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+}
+
+.star-btn {
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.review-item {
+  background: #f8f9fa;
+  border-left: 4px solid #fbbf24;
+}

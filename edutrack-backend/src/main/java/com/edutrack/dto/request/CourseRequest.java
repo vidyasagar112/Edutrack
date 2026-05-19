@@ -15,6 +15,9 @@ public class CourseRequest {
     private String thumbnailUrl;
 
     private boolean published;
+    
+    private String category;
+    private String tags;
 
     // Getters and Setters
     public String getTitle() { return title; }
@@ -31,4 +34,12 @@ public class CourseRequest {
 
     public boolean isPublished() { return published; }
     public void setPublished(boolean published) { this.published = published; }
+    
+    public String getCategory() { return category; }
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getTags() { return tags; }
+    public void setTags(String tags) { this.tags = tags; }
 }

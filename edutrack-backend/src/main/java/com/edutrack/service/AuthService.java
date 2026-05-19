@@ -16,10 +16,18 @@ import com.edutrack.dto.request.RegisterRequest;
 import com.edutrack.dto.response.AuthResponse;
 import com.edutrack.entity.Role;
 import com.edutrack.entity.User;
+import com.edutrack.exception.ResourceNotFoundException;
 import com.edutrack.exception.UserAlreadyExistsException;
+import com.edutrack.repository.EmailVerificationTokenRepository;
+import com.edutrack.repository.PasswordResetTokenRepository;
 import com.edutrack.repository.RoleRepository;
 import com.edutrack.repository.UserRepository;
 import com.edutrack.security.JwtTokenProvider;
+
+import com.edutrack.entity.PasswordResetToken;
+import com.edutrack.entity.EmailVerificationToken;
+
+import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -30,6 +38,11 @@ public class AuthService {
     @Autowired private AuthenticationManager authenticationManager;
     @Autowired private JwtTokenProvider      jwtTokenProvider;
     @Autowired private EmailService          emailService;
+    @Autowired private PasswordResetTokenRepository
+    resetTokenRepository;
+@Autowired private EmailVerificationTokenRepository
+    verifyTokenRepository;
+
 
     public AuthResponse register(RegisterRequest request) {
 
@@ -57,6 +70,8 @@ public class AuthService {
         user.setRoles(roles);
 
         userRepository.save(user);
+        
+        sendVerificationEmail(user.getEmail());
 
         // send welcome email
         emailService.sendWelcomeEmail(user.getEmail(), user.getFullName());
@@ -96,5 +111,102 @@ public class AuthService {
 
         return new AuthResponse(token, user.getId(),
                 user.getEmail(), user.getFullName(), roleNames);
+    }
+    
+    public void forgotPassword(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                    new ResourceNotFoundException(
+                            "User", "email", email));
+
+        // delete old tokens
+        resetTokenRepository.deleteByUserId(user.getId());
+
+        // create new token
+        String token = UUID.randomUUID().toString();
+        PasswordResetToken resetToken =
+                new PasswordResetToken(token, user, 30);
+        resetTokenRepository.save(resetToken);
+
+        // send email
+        emailService.sendForgotPasswordEmail(
+                user.getEmail(),
+                user.getFullName(),
+                token);
+    }
+
+    // ── RESET PASSWORD ──────────────────────────────────
+    public void resetPassword(String token,
+                               String newPassword) {
+        PasswordResetToken resetToken =
+                resetTokenRepository.findByToken(token)
+                .orElseThrow(() ->
+                    new RuntimeException(
+                            "Invalid or expired token!"));
+
+        if (resetToken.isExpired()) {
+            throw new RuntimeException(
+                    "Token has expired! Request a new one.");
+        }
+
+        if (resetToken.isUsed()) {
+            throw new RuntimeException(
+                    "Token already used!");
+        }
+
+        User user = resetToken.getUser();
+        user.setPassword(
+                passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        resetToken.setUsed(true);
+        resetTokenRepository.save(resetToken);
+    }
+
+    // ── SEND EMAIL VERIFICATION ─────────────────────────
+    public void sendVerificationEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                    new ResourceNotFoundException(
+                            "User", "email", email));
+
+        // delete old tokens
+        verifyTokenRepository.deleteByUserId(user.getId());
+
+        String token = UUID.randomUUID().toString();
+        EmailVerificationToken verifyToken =
+                new EmailVerificationToken(token, user, 24);
+        verifyTokenRepository.save(verifyToken);
+
+        emailService.sendEmailVerificationEmail(
+                user.getEmail(),
+                user.getFullName(),
+                token);
+    }
+
+    // ── VERIFY EMAIL ────────────────────────────────────
+    public void verifyEmail(String token) {
+        EmailVerificationToken verifyToken =
+                verifyTokenRepository.findByToken(token)
+                .orElseThrow(() ->
+                    new RuntimeException(
+                            "Invalid verification link!"));
+
+        if (verifyToken.isExpired()) {
+            throw new RuntimeException(
+                    "Link expired! Request a new one.");
+        }
+
+        if (verifyToken.isUsed()) {
+            throw new RuntimeException(
+                    "Already verified!");
+        }
+
+        User user = verifyToken.getUser();
+        user.setEmailVerified(true);
+        userRepository.save(user);
+
+        verifyToken.setUsed(true);
+        verifyTokenRepository.save(verifyToken);
     }
 }

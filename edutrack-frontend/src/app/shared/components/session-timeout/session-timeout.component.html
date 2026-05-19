@@ -1,0 +1,37 @@
+<div *ngIf="showWarning" class="session-overlay">
+  <div class="session-modal card border-0 shadow-lg p-4
+              text-center">
+
+    <div style="font-size:3rem;">⏰</div>
+
+    <h5 class="fw-bold mt-3 mb-2">
+      Session Expiring Soon!
+    </h5>
+
+    <p class="text-muted mb-3">
+      You will be logged out in
+      <span class="fw-bold text-danger fs-4">
+        {{ countdown }}
+      </span>
+      seconds due to inactivity.
+    </p>
+
+    <div class="progress mb-4" style="height:8px;">
+      <div class="progress-bar bg-danger"
+        [style.width.%]="(countdown/60)*100">
+      </div>
+    </div>
+
+    <div class="d-flex gap-3 justify-content-center">
+      <button class="btn btn-primary px-4 fw-bold"
+        (click)="stayLoggedIn()">
+        ✅ Stay Logged In
+      </button>
+      <button class="btn btn-outline-danger px-4"
+        (click)="logout()">
+        Logout
+      </button>
+    </div>
+
+  </div>
+</div>

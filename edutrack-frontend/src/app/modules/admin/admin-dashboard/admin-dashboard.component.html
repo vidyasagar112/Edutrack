@@ -231,6 +231,17 @@
                       📧 Email
                     </button>
                     <button
+                      class="btn btn-sm"
+                      [class.btn-outline-warning]="user.enabled"
+                      [class.btn-outline-success]="!user.enabled"
+                      (click)="toggleStatus(user)"
+                      [disabled]="isTogglingId === user.id">
+                      <span *ngIf="isTogglingId===user.id"
+                        class="spinner-border spinner-border-sm me-1">
+                      </span>
+                      {{ user.enabled ? '🔒 Disable' : '🔓 Enable' }}
+                    </button>
+                    <button
                       class="btn btn-sm btn-outline-danger"
                       (click)="deleteUser(
                         user.id, user.fullName)"
@@ -304,6 +315,17 @@
                       class="btn btn-sm btn-outline-primary"
                       (click)="selectUserForEmail(user.id)">
                       📧 Email
+                    </button>
+                    <button
+                      class="btn btn-sm"
+                      [class.btn-outline-warning]="user.enabled"
+                      [class.btn-outline-success]="!user.enabled"
+                      (click)="toggleStatus(user)"
+                      [disabled]="isTogglingId === user.id">
+                      <span *ngIf="isTogglingId===user.id"
+                        class="spinner-border spinner-border-sm me-1">
+                      </span>
+                      {{ user.enabled ? '🔒 Disable' : '🔓 Enable' }}
                     </button>
                     <button
                       class="btn btn-sm btn-outline-danger"
@@ -399,6 +421,17 @@
                       📧 Email
                     </button>
                     <button
+                      class="btn btn-sm"
+                      [class.btn-outline-warning]="user.enabled"
+                      [class.btn-outline-success]="!user.enabled"
+                      (click)="toggleStatus(user)"
+                      [disabled]="isTogglingId === user.id">
+                      <span *ngIf="isTogglingId===user.id"
+                        class="spinner-border spinner-border-sm me-1">
+                      </span>
+                      {{ user.enabled ? '🔒 Disable' : '🔓 Enable' }}
+                    </button>
+                    <button
                       class="btn btn-sm btn-outline-danger"
                       (click)="deleteUser(
                         user.id, user.fullName)"
@@ -418,6 +451,8 @@
       </div>
     </div>
   </div>
+
+  
 
   <!-- ── COURSES TAB ── -->
   <div *ngIf="!isLoading && activeTab==='courses'">

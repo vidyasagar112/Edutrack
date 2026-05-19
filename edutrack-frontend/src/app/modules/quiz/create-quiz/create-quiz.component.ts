@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { QuizService } from '../../../core/services/quiz.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-create-quiz',
@@ -25,7 +26,8 @@ export class CreateQuizComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private quizService: QuizService
+    private quizService: QuizService,
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -53,6 +55,7 @@ export class CreateQuizComponent implements OnInit {
         this.isLoading = false;
         if (res.success) {
           this.successMessage = 'Quiz created! Now add questions.';
+          this.toast.show(this.successMessage, 'success');  
           setTimeout(() => {
             this.router.navigate(
               ['/quiz', res.data.id, 'add-question']);
@@ -61,8 +64,7 @@ export class CreateQuizComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage =
-          err.error?.message || 'Failed to create quiz!';
+        this.toast.error(err.error?.message || 'Failed to create quiz!'); 
       }
     });
   }

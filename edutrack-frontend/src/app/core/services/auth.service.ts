@@ -32,35 +32,52 @@ export class AuthService {
     );
   }
 
-  login(request: LoginRequest): Observable<any> {
-    return this.http.post(`${this.apiUrl}/auth/login`, request).pipe(
-      tap((response: any) => {
-        if (response.success) {
-          this.saveUser(response.data);
-        }
-      })
-    );
-  }
+  login(request: LoginRequest,
+      rememberMe = false): Observable<any> {
+  return this.http.post(
+    `${this.apiUrl}/auth/login`, request).pipe(
+    tap((response: any) => {
+      if (response.success) {
+        this.saveUser(response.data, rememberMe);
+      }
+    })
+  );
+}
 
-  logout(): void {
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('token');
-    this.currentUserSubject.next(null);
-  }
-
-  private saveUser(user: AuthResponse): void {
-    localStorage.setItem('currentUser', JSON.stringify(user));
+private saveUser(user: AuthResponse,
+                  rememberMe = false): void {
+  // use sessionStorage if not remember me
+  // use localStorage if remember me
+  if (rememberMe) {
+    localStorage.setItem('currentUser',
+      JSON.stringify(user));
     localStorage.setItem('token', user.token);
-    this.currentUserSubject.next(user);
+  } else {
+    sessionStorage.setItem('currentUser',
+      JSON.stringify(user));
+    sessionStorage.setItem('token', user.token);
   }
+  this.currentUserSubject.next(user);
+}
 
-  getToken(): string | null {
-    return localStorage.getItem('token');
-  }
+getToken(): string | null {
+  return localStorage.getItem('token') ||
+         sessionStorage.getItem('token');
+}
 
-  getCurrentUser(): AuthResponse | null {
-    return this.currentUserSubject.value;
-  }
+getCurrentUser(): AuthResponse | null {
+  const saved = localStorage.getItem('currentUser') ||
+                sessionStorage.getItem('currentUser');
+  return saved ? JSON.parse(saved) : null;
+}
+
+logout(): void {
+  localStorage.removeItem('currentUser');
+  localStorage.removeItem('token');
+  sessionStorage.removeItem('currentUser');
+  sessionStorage.removeItem('token');
+  this.currentUserSubject.next(null);
+}
 
   isLoggedIn(): boolean {
     return !!this.getToken();
@@ -80,4 +97,25 @@ export class AuthService {
     const user = this.getCurrentUser();
     return user?.roles?.includes('ROLE_ADMIN') ?? false;
   }
+  forgotPassword(email: string): Observable<any> {
+  return this.http.post(
+    `${this.apiUrl}/auth/forgot-password`, { email });
+}
+
+resetPassword(token: string,
+              newPassword: string): Observable<any> {
+  return this.http.post(
+    `${this.apiUrl}/auth/reset-password`,
+    { token, newPassword });
+}
+
+verifyEmail(token: string): Observable<any> {
+  return this.http.get(
+    `${this.apiUrl}/auth/verify-email?token=${token}`);
+}
+
+resendVerification(email: string): Observable<any> {
+  return this.http.post(
+    `${this.apiUrl}/auth/resend-verification`, { email });
+}
 }

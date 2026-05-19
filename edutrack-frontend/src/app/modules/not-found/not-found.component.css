@@ -1,0 +1,10 @@
+.not-found-page {
+  min-height: calc(100vh - 70px);
+  background: linear-gradient(135deg, #f0f4ff, #e8f0fe);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #1F4E79, #2E75B6);
+  border: none;
+  border-radius: 10px;
+}

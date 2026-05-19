@@ -1,5 +1,6 @@
 package com.edutrack.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.edutrack.dto.request.CourseRequest;
 import com.edutrack.dto.response.ApiResponse;
@@ -93,4 +95,51 @@ public class CourseController {
         return ResponseEntity.ok(ApiResponse.success(
                 "Course deleted successfully", null));
     }
+    
+ // Add these endpoints
+
+ // GET /api/courses/search-filter
+ @GetMapping("/search-filter")
+ public ResponseEntity<ApiResponse<List<CourseResponse>>>
+         searchWithFilters(
+         @RequestParam(required = false) String keyword,
+         @RequestParam(required = false) String category,
+         @RequestParam(required = false) String subject) {
+     return ResponseEntity.ok(ApiResponse.success(
+             courseService.searchWithFilters(
+                     keyword, category, subject)));
+ }
+
+ // GET /api/courses/categories
+ @GetMapping("/categories")
+ public ResponseEntity<ApiResponse<List<String>>>
+         getCategories() {
+     return ResponseEntity.ok(ApiResponse.success(
+             courseService.getCategories()));
+ }
+
+ // GET /api/courses/subjects
+ @GetMapping("/subjects")
+ public ResponseEntity<ApiResponse<List<String>>>
+         getSubjects() {
+     return ResponseEntity.ok(ApiResponse.success(
+             courseService.getSubjects()));
+ }
+
+ // POST /api/courses/{id}/thumbnail
+ @PostMapping("/{id}/thumbnail")
+ @PreAuthorize("hasAnyAuthority('ROLE_INSTRUCTOR'," +
+               "'ROLE_ADMIN')")
+ public ResponseEntity<ApiResponse<Void>>
+         uploadThumbnail(
+         @PathVariable Long id,
+         @RequestParam("file") MultipartFile file,
+         @AuthenticationPrincipal
+         UserDetails userDetails) throws IOException {
+
+     courseService.uploadThumbnail(
+             id, file, userDetails.getUsername());
+     return ResponseEntity.ok(ApiResponse.success(
+             "Thumbnail uploaded!", null));
+ }
 }
