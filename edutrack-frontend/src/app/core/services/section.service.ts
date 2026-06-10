@@ -6,38 +6,53 @@ import { environment } from '../../../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class SectionService {
 
-  private apiUrl = environment.apiUrl;
+  private readonly API =
+    `${environment.apiUrl}/sections`;
 
   constructor(private http: HttpClient) {}
 
-  getSectionsByCourse(courseId: number): Observable<any> {
+  // ── Public ──────────────────────────────────────────
+
+  getSectionsByCourse(
+      courseId: number): Observable<any> {
     return this.http.get(
-      `${this.apiUrl}/sections/course/${courseId}`);
+      `${this.API}/course/${courseId}`);
   }
 
-  addSection(courseId: number, data: any): Observable<any> {
+  // ── Student ─────────────────────────────────────────
+
+  markComplete(sectionId: number): Observable<any> {
+    return this.http.patch(
+      `${this.API}/${sectionId}/complete`, {});
+  }
+
+  unmarkComplete(sectionId: number): Observable<any> {
+    return this.http.patch(
+      `${this.API}/${sectionId}/uncomplete`, {});
+  }
+
+  // ── Instructor ──────────────────────────────────────
+
+  addSection(courseId: number,
+             data: {
+               title: string;
+               description?: string;
+               sectionOrder: number;
+               durationMinutes?: number;
+               contentUrl?: string;
+             }): Observable<any> {
     return this.http.post(
-      `${this.apiUrl}/sections/course/${courseId}`, data);
+      `${this.API}/course/${courseId}`, data);
   }
 
   updateSection(sectionId: number,
                 data: any): Observable<any> {
     return this.http.put(
-      `${this.apiUrl}/sections/${sectionId}`, data);
+      `${this.API}/${sectionId}`, data);
   }
 
   deleteSection(sectionId: number): Observable<any> {
     return this.http.delete(
-      `${this.apiUrl}/sections/${sectionId}`);
-  }
-
-  markComplete(sectionId: number): Observable<any> {
-    return this.http.patch(
-      `${this.apiUrl}/sections/${sectionId}/complete`, {});
-  }
-
-  unmarkComplete(sectionId: number): Observable<any> {
-    return this.http.patch(
-      `${this.apiUrl}/sections/${sectionId}/uncomplete`, {});
+      `${this.API}/${sectionId}`);
   }
 }

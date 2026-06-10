@@ -6,25 +6,30 @@ import { environment } from '../../../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class RatingService {
 
-  private apiUrl = environment.apiUrl;
+  private readonly API =
+    `${environment.apiUrl}/ratings`;
 
   constructor(private http: HttpClient) {}
+
+  // ── Public ──────────────────────────────────────────
+
+  getCourseRatings(courseId: number): Observable<any> {
+    return this.http.get(
+      `${this.API}/course/${courseId}`);
+  }
+
+  // ── Student ─────────────────────────────────────────
 
   rateCourse(courseId: number,
              rating: number,
              review: string): Observable<any> {
     return this.http.post(
-      `${this.apiUrl}/ratings/course/${courseId}`,
+      `${this.API}/course/${courseId}`,
       { rating, review });
-  }
-
-  getCourseRatings(courseId: number): Observable<any> {
-    return this.http.get(
-      `${this.apiUrl}/ratings/course/${courseId}`);
   }
 
   getMyRating(courseId: number): Observable<any> {
     return this.http.get(
-      `${this.apiUrl}/ratings/course/${courseId}/my`);
+      `${this.API}/course/${courseId}/my`);
   }
 }

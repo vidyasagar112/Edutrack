@@ -6,30 +6,34 @@ import { environment } from '../../../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class DocumentService {
 
-  private apiUrl = environment.apiUrl;
+  private readonly API =
+    `${environment.apiUrl}/documents`;
 
   constructor(private http: HttpClient) {}
+
+  // ── Public ──────────────────────────────────────────
+
+  getDocuments(courseId: number): Observable<any> {
+    return this.http.get(
+      `${this.API}/course/${courseId}`);
+  }
+
+  getDownloadUrl(documentId: number): string {
+    return `${this.API}/download/${documentId}`;
+  }
+
+  // ── Instructor ──────────────────────────────────────
 
   uploadDocument(courseId: number,
                  file: File): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);
     return this.http.post(
-      `${this.apiUrl}/documents/upload/${courseId}`,
-      formData);
-  }
-
-  getDocuments(courseId: number): Observable<any> {
-    return this.http.get(
-      `${this.apiUrl}/documents/course/${courseId}`);
+      `${this.API}/upload/${courseId}`, formData);
   }
 
   deleteDocument(documentId: number): Observable<any> {
     return this.http.delete(
-      `${this.apiUrl}/documents/${documentId}`);
-  }
-
-  getDownloadUrl(documentId: number): string {
-    return `${this.apiUrl}/documents/download/${documentId}`;
+      `${this.API}/${documentId}`);
   }
 }

@@ -1,19 +1,18 @@
-import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandlerFn,
-  HttpInterceptorFn
-} from '@angular/common/http';
+import { HttpInterceptorFn, HttpRequest,
+         HttpHandlerFn } from '@angular/common/http';
 
 export const jwtInterceptor: HttpInterceptorFn = (
   req: HttpRequest<any>,
   next: HttpHandlerFn
 ) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token')
+    || sessionStorage.getItem('token');
 
   if (token) {
     const cloned = req.clone({
-      headers: req.headers.set('Authorization', `Bearer ${token}`)
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
     });
     return next(cloned);
   }

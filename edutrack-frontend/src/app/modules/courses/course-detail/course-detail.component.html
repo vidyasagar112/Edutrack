@@ -425,6 +425,12 @@
           </button>
         </div>
 
+        <!-- Not enrolled message -->
+        <div *ngIf="isStudent && !isEnrolled"
+          class="alert alert-info mb-4">
+          ℹ️ Enroll in this course to rate it
+        </div>
+
         <!-- Reviews List -->
         <div *ngFor="let rating of ratings"
           class="review-item mb-3 p-3 rounded-3">

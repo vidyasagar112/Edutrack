@@ -76,6 +76,23 @@ export class CourseDetailComponent implements OnInit {
         this.loadSections(id);
         this.loadDocuments(id);
         this.loadRatings(id);
+        this.loadEnrollmentStatus(id);
+      }
+    });
+  }
+
+  loadEnrollmentStatus(id: number): void {
+    if (!this.isStudent) return;
+
+    this.enrollmentService.getMyEnrollments().subscribe({
+      next: (res) => {
+        const enrollments = res.data || [];
+        this.isEnrolled = enrollments.some(
+          (e: any) => e.courseId === id
+        );
+      },
+      error: () => {
+        this.isEnrolled = false;
       }
     });
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AnalyticsService } from '../../core/services/analytics.service';
 
@@ -13,8 +13,7 @@ export class AnalyticsComponent implements OnInit {
 
   analytics: any = null;
   isLoading = true;
-
-  constructor(private analyticsService: AnalyticsService) {}
+  private analyticsService = inject(AnalyticsService);
 
   ngOnInit(): void {
     this.analyticsService.getMyAnalytics().subscribe({

@@ -3,34 +3,41 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class EnrollmentService {
 
-  private apiUrl = environment.apiUrl;
+  private readonly API =
+    `${environment.apiUrl}/enrollments`;
 
   constructor(private http: HttpClient) {}
 
+  // ── Student ─────────────────────────────────────────
+
   enroll(courseId: number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/enrollments`, { courseId });
+    return this.http.post(this.API, { courseId });
   }
 
   getMyEnrollments(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/enrollments/my`);
+    return this.http.get(`${this.API}/my`);
   }
 
-  getEnrollmentsByCourse(courseId: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/enrollments/course/${courseId}`);
-  }
-
-  updateProgress(enrollmentId: number, percent: number): Observable<any> {
+  updateProgress(enrollmentId: number,
+                 percent: number): Observable<any> {
     return this.http.patch(
-      `${this.apiUrl}/enrollments/${enrollmentId}/progress?percent=${percent}`, {});
+      `${this.API}/${enrollmentId}/progress?percent=${percent}`,
+      {});
   }
 
   dropEnrollment(enrollmentId: number): Observable<any> {
     return this.http.patch(
-      `${this.apiUrl}/enrollments/${enrollmentId}/drop`, {});
+      `${this.API}/${enrollmentId}/drop`, {});
+  }
+
+  // ── Instructor ──────────────────────────────────────
+
+  getEnrollmentsByCourse(
+      courseId: number): Observable<any> {
+    return this.http.get(
+      `${this.API}/course/${courseId}`);
   }
 }

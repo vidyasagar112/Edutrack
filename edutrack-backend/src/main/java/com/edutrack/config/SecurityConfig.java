@@ -44,17 +44,22 @@ public class SecurityConfig {
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/swagger-ui/**").permitAll()
-                .requestMatchers("/swagger-ui.html").permitAll()
-                .requestMatchers("/v3/api-docs/**").permitAll()
-                .requestMatchers("/v3/api-docs").permitAll()
-                .requestMatchers("/api/admin/**")
-                    .hasAuthority("ROLE_ADMIN")
-                .requestMatchers("/api/instructor/**")
-                    .hasAuthority("ROLE_INSTRUCTOR")
-                .anyRequest().authenticated()
-            )
+            	    .requestMatchers("/api/auth/**").permitAll()
+            	    .requestMatchers("/api/courses").permitAll()
+            	    .requestMatchers("/api/courses/{id}").permitAll()
+            	    .requestMatchers("/api/courses/search").permitAll()
+            	    .requestMatchers("/api/courses/categories").permitAll()
+            	    .requestMatchers("/api/courses/subjects").permitAll()
+            	    .requestMatchers("/api/courses/search-filter").permitAll()
+            	    .requestMatchers("/api/sections/course/**").permitAll()
+            	    .requestMatchers("/api/ratings/course/**").permitAll()
+            	    .requestMatchers("/api/quizzes/course/**").permitAll()
+            	    .requestMatchers("/api/documents/course/**").permitAll()
+            	    .requestMatchers("/api/documents/download/**").permitAll() // ← ADD THIS
+            	    .requestMatchers("/swagger-ui/**").permitAll()
+            	    .requestMatchers("/v3/api-docs/**").permitAll()
+            	    .anyRequest().authenticated()
+            	)
             .addFilterBefore(jwtAuthFilter,
                     UsernamePasswordAuthenticationFilter.class);
 
